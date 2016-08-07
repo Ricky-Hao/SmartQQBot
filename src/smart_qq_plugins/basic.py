@@ -19,6 +19,15 @@ REPLY_SUFFIX = (
     '?',
     '||',
 )
+REPLY_CONTENT=(
+    "干嘛（‘·д·）"，
+    "嗯",
+    "肿么了",
+    "在呀",
+    "不约",
+    "嗯哼",
+    "啊哈"
+)
 
 
 @on_all_message(name='callout')
