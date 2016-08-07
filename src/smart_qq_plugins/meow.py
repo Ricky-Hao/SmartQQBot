@@ -14,13 +14,13 @@ def meow(msg,bot):
     group_code=json.load(file("../config/group_code.json"))
     try:
         if msg.group_code in group_code.values():
-            if "喵喵喵" in msg.content:
+            if ur"喵喵喵" in msg.content:
                 try:
                     logger.info('Meow to ',msg.group_code)
                 except:
                     pass
                 bot.reply_msg(msg,"喵喵喵"+REPLY_SUFFIX)
-            elif "喵" in msg.content:
+            elif ur"喵" in msg.content:
                 try:
                     logger.info('Meow to ',msg.group_code)
                 except:
