@@ -21,7 +21,7 @@ def meow(msg,bot):
         elif ur"喵" in msg.content:
                 logger.info('Meow to '+msg.group_code)
             bot.reply_msg(msg,"喵"+random.choice(REPLY_SUFFIX))
-            return True
-        return False
+        return True
+    return False
     except:
         pass
