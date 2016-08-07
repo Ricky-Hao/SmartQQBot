@@ -32,7 +32,7 @@ REPLY_CONTENT=(
 
 @on_all_message(name='callout')
 def callout(msg, bot):
-    if ("小浩" in msg.content) or "有人吗" in msg.content:
+    if (msg.content.rfind("小浩")==0 and "小浩，" not in msg.content) or "有人吗" in msg.content:
         reply = bot.reply_msg(msg, return_function=True)
         logger.info("RUNTIMELOG " + str(msg.from_uin) + " calling me out, trying to reply....")
         reply_content = random.choice(REPLY_CONTENT) + random.choice(REPLY_SUFFIX)
