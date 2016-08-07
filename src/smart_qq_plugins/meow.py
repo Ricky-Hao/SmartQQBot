@@ -23,5 +23,3 @@ def meow(msg,bot):
             bot.reply_msg(msg,"喵"+random.choice(REPLY_SUFFIX))
         return True
     return False
-    except:
-        pass
