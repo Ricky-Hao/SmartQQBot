@@ -35,7 +35,7 @@ def callout(msg, bot):
     if "小浩" in msg.content:
         reply = bot.reply_msg(msg, return_function=True)
         logger.info("RUNTIMELOG " + str(msg.from_uin) + " calling me out, trying to reply....")
-        reply_content = "干嘛（‘·д·）" + random.choice(REPLY_SUFFIX)
+        reply_content = random.choice(REPLY_CONTENT) + random.choice(REPLY_SUFFIX)
         reply(reply_content)
 
 
