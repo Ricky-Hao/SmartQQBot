@@ -47,7 +47,7 @@ class Recorder(object):
 
 recorder = Recorder()
 
-
+'''
 @on_group_message(name='repeat')
 def repeat(msg, bot):
     global recorder
@@ -59,7 +59,7 @@ def repeat(msg, bot):
             reply(msg.content)
             recorder.last_reply = msg.content
     recorder.msg_list.append(msg)
-
+'''
 
 @on_group_message(name='nick_call')
 def nick_call(msg, bot):
