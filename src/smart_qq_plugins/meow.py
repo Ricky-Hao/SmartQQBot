@@ -13,12 +13,13 @@ REPLY_SUFFIX = (
 
 @on_group_message(name='meow')
 def meow(msg,bot):
-    group_code=json.load(file("./config/group_code.json"))
+    with open("./config/group_code.json","r") as f:
+        group_code=json.load(f)
     if str(msg.group_code) in group_code.values():
-        if ur"喵喵喵" in msg.content:
+        if "喵喵喵" in msg.content:
             logger.info('Meow to '+str(msg.group_code))
             bot.reply_msg(msg,"喵喵喵"+random.choice(REPLY_SUFFIX))
-        elif ur"喵" in msg.content and "小喵" not in msg.content:
+        elif "喵" in msg.content and "小喵" not in msg.content:
             logger.info('Meow to '+str(msg.group_code))
             bot.reply_msg(msg,"喵"+random.choice(REPLY_SUFFIX))
         return True

@@ -9,9 +9,10 @@ from smart_qq_bot.signals import on_group_message
 # 申请 API 谢谢
 # 另外需要 requests 支持
 url = "http://apis.baidu.com/turing/turing/turing"
-headers = {
-    'apikey': file("./config/baidu_api_key.conf").read().strip('\n')
-}
+with open("./config/baidu_api_key.conf","r") as f:
+    headers = {
+        'apikey': f.read().strip('\n')
+    }
 
 
 @on_group_message
@@ -20,13 +21,14 @@ def turing_robot(msg, bot):
     :type bot: smart_qq_bot.bot.QQBot
     :type msg: smart_qq_bot.messages.QMessage
     """
-
-    querystring = {
-        "key": file("./config/turing_api_key.conf").read().strip('\n'),
-        "info": msg.content.strip("小浩，"),
-        "userid": "xiaohao"
-    }
-    group_code=json.load(file("./config/group_code.json"))
+    with open("./config/turing_api_key.conf","r") as f:
+        querystring = {
+            "key": f.read().strip('\n'),
+            "info": msg.content.strip("小浩，"),
+            "userid": "xiaohao"
+        }
+    with open("./config/group_code.json","r") as f:
+        group_code=json.load(f)
 
     if str(msg.group_code) in group_code.values():
         if msg.content.rfind("小浩，")==0:

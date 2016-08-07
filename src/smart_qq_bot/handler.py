@@ -1,11 +1,11 @@
 # coding: utf-8
 from collections import defaultdict, namedtuple
-from Queue import Queue
+import queue
 from threading import Thread
 
 from smart_qq_bot.bot import QQBot
 from smart_qq_bot.logger import logger
-from smart_qq_bot.excpetions import (
+from smart_qq_bot.exceptions import (
     MsgProxyNotImplementError,
     InvalidHandlerType,
 )
@@ -25,7 +25,7 @@ _active = set()
 
 RAW_TYPE = "raw_message"
 
-MSG_TYPES = MSG_TYPE_MAP.keys()
+MSG_TYPES = list(MSG_TYPE_MAP.keys())
 MSG_TYPES.append(RAW_TYPE)
 
 
@@ -97,13 +97,13 @@ class Worker(Thread):
     def __init__(
             self, queue, group=None,
             target=None, name=None, args=(),
-            kwargs=None, verbose=None,
+            kwargs=None, daemon=None,
     ):
         """
-        :type queue: Queue
+        :type queue: queue
         """
-        super(Worker, self).__init__(
-            group, target, name, args, kwargs, verbose
+        super().__init__(
+            group, target, name, args, kwargs
         )
         self.queue = queue
         self._stopped = False
@@ -141,8 +141,8 @@ class MessageObserver(object):
                 "bot should be instance of QQBot"
             )
         self.bot = bot
-        self.handler_queue = Queue()
-        self.workers = [Worker(self.handler_queue) for i in xrange(workers)]
+        self.handler_queue = queue.Queue()
+        self.workers = [Worker(self.handler_queue) for i in range(workers)]
         for worker in self.workers:
             worker.setDaemon(True)
             worker.start()

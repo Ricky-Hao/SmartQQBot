@@ -5,7 +5,7 @@ import shutil
 
 from smart_qq_bot.logger import logger
 from smart_qq_bot.config import DEFAULT_PLUGIN_CONFIG
-from smart_qq_bot.excpetions import (
+from smart_qq_bot.exceptions import (
     ConfigFileDoesNotExist,
     ConfigKeyError,
 )

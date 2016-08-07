@@ -40,31 +40,6 @@ class QRLoginFailed(UserWarning):
     pass
 
 
-def show_qr(path):
-    import platform
-    try:
-        from Tkinter import Tk, Label
-    except ImportError:
-        raise SystemError('缺少Tkinter模块, 可使用sudo pip install Tkinter尝试安装')
-    try:
-        from PIL import ImageTk, Image
-    except ImportError:
-        raise SystemError('缺少PIL模块, 可使用sudo pip install PIL尝试安装')
-
-    system = platform.system()
-    if system == 'Darwin':  # 如果是Mac OS X
-        img = Image.open(path)
-        img.show()
-    else:
-        root = Tk()
-        img = ImageTk.PhotoImage(
-            Image.open(path)
-        )
-        panel = Label(root, image=img)
-        panel.pack(side="bottom", fill="both", expand="yes")
-        root.mainloop()
-
-
 def find_first_result(html, regxp, error, raise_exception=False):
     founds = re.findall(regxp, html)
     tip = "Can not find given pattern [%s]in response: %s" % (regxp, error)
@@ -228,10 +203,6 @@ class QQBot(object):
                 'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid),
                 self.qrcode_path
             )
-            if not no_gui:
-                thread = Thread(target=show_qr, args=(self.qrcode_path, ))
-                thread.setDaemon(True)
-                thread.start()
 
             while True:
                 ret_code, redirect_url = self._get_qr_login_status(

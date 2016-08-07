@@ -1,5 +1,5 @@
 # coding:utf-8
-import urllib2
+import requests
 import json
 import re
 
@@ -15,21 +15,21 @@ KEY = '31662bc776555612e3639dbca1ad1fd5'
 def weather(msg, bot):
     global query
 
-    match = re.match(ur'^(weather|天气) (\w+|[\u4e00-\u9fa5]+)', msg.content)
+    match = re.match(r'^(weather|天气) (\w+|[\u4e00-\u9fa5]+)', msg.content)
     if match:
         logger.info("RUNTIMELOG 查询天气...")
         command = match.group(1)
         city = match.group(2)
         logger.info("RUNTIMELOG 查询天气语句: " + msg.content)
-        if command == 'weather' or command == u'天气':
+        if command == 'weather' or command == '天气':
             try:
-                city_name = urllib2.quote(city.encode('utf-8'))
+                city_name = city
                 url_str = "http://api.map.baidu.com/telematics/v3/weather?location={city}&ak={key}&output=json".format(
                     city=city_name,
                     key=KEY
                 )
-                response = urllib2.urlopen(url_str)
-                data_html = response.read()
+                response = requests.get(url_str)
+                data_html = response.text
                 logger.debug("RESPONSE " + data_html)
                 json_result = json.loads(data_html)['results'][0]
 

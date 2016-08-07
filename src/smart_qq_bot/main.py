@@ -4,19 +4,19 @@ import logging
 import os
 import socket
 import sys
+from imp import reload
 
 from smart_qq_bot.config import COOKIE_FILE
 from smart_qq_bot.logger import logger
 from smart_qq_bot.app import bot, plugin_manager
 from smart_qq_bot.handler import MessageObserver
 from smart_qq_bot.messages import mk_msg
-from smart_qq_bot.excpetions import ServerResponseEmpty
+from smart_qq_bot.exceptions import ServerResponseEmpty
 from smart_qq_bot.signals import bot_inited_registry
 
 
 def patch():
     reload(sys)
-    sys.setdefaultencoding("utf-8")
 
 
 def clean_cookie():
@@ -37,7 +37,7 @@ def main_loop(no_gui=False, new_user=False, debug=False):
         clean_cookie()
     bot.login(no_gui)
     observer = MessageObserver(bot)
-    for name, func in bot_inited_registry.iteritems():
+    for name, func in bot_inited_registry.items():
         try:
             func(bot)
         except Exception:

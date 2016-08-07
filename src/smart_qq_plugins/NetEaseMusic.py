@@ -8,7 +8,7 @@ from smart_qq_bot.signals import on_all_message, on_bot_inited
 
 @on_all_message(name="NetEaseMusic")
 def NetEaseMusic(msg,bot):
-    match = re.match(ur'^(music|音乐) (\w+|[\u4e00-\u9fa5]+)', msg.content)
+    match = re.match('^(music|音乐) (\w+|[\u4e00-\u9fa5]+)', msg.content)
     if match:
         url="http://music.163.com/api/search/get/"
         p={
