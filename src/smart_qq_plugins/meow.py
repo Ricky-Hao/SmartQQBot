@@ -1,6 +1,6 @@
 # coding:utf-8
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import on_all_message
+from smart_qq_bot.signals import on_group_message
 import json
 
 REPLY_SUFFIX = (
@@ -10,11 +10,11 @@ REPLY_SUFFIX = (
 )
 
 
-@on_all_message(name='meow')
+@on_group_message(name='meow')
 def meow(msg,bot):
-    group_code=json.load(file("../config/group_code.json"))
+    group_code=json.load(file("./config/group_code.json"))
     try:
-        if msg.group_code in group_code.values():
+        if str(msg.group_code) in group_code.values():
             if ur"喵喵喵" in msg.content:
                 try:
                     logger.info('Meow to ',msg.group_code)
