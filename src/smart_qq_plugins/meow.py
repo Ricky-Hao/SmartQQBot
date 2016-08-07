@@ -17,13 +17,13 @@ def meow(msg,bot):
         if str(msg.group_code) in group_code.values():
             if ur"喵喵喵" in msg.content:
                 try:
-                    logger.info('Meow to ',msg.group_code)
+                    logger.info('Meow to '+msg.group_code)
                 except:
                     pass
                 bot.reply_msg(msg,"喵喵喵"+REPLY_SUFFIX)
             elif ur"喵" in msg.content:
                 try:
-                    logger.info('Meow to ',msg.group_code)
+                    logger.info('Meow to '+msg.group_code)
                 except:
                     pass
                 bot.reply_msg(msg,"喵"+REPLY_SUFFIX)
