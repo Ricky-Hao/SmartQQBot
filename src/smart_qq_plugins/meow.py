@@ -1,3 +1,4 @@
+# coding:utf-8
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import on_all_message
 import json
