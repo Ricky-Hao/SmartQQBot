@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-
+import sqlite3
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import (
     on_all_message,
@@ -29,40 +29,21 @@ REPLY_CONTENT=(
     "啊哈"
 )
 
+con = sqlite3.connect("./config/data.db")
+cur=con.cursor()
+cur.execute('select uin from uin_plugins where plugin_name="basic";')
+a=cur.fetchall()
+uin=[]
+for i in a:
+    uin.append(i[0])
+cur.close()
+con.close()
 
-@on_all_message(name='callout')
-def callout(msg, bot):
-    if (msg.content.rfind("小浩")==0 and "小浩，" not in msg.content) or "有人吗" in msg.content:
-        reply = bot.reply_msg(msg, return_function=True)
-        logger.info("RUNTIMELOG " + str(msg.from_uin) + " calling me out, trying to reply....")
-        reply_content = random.choice(REPLY_CONTENT) + random.choice(REPLY_SUFFIX)
-        reply(reply_content)
-
-
-# =====复读插件=====
-class Recorder(object):
-    def __init__(self):
-        self.msg_list = list()
-        self.last_reply = ""
-
-recorder = Recorder()
-
-'''
-@on_group_message(name='repeat')
-def repeat(msg, bot):
-    global recorder
-    reply = bot.reply_msg(msg, return_function=True)
-
-    if len(recorder.msg_list) > 0 and recorder.msg_list[-1].content == msg.content and recorder.last_reply != msg.content:
-        if str(msg.content).strip() not in ("", " ", "[图片]", "[表情]"):
-            logger.info("RUNTIMELOG " + str(msg.group_code) + " repeating, trying to reply " + str(msg.content))
-            reply(msg.content)
-            recorder.last_reply = msg.content
-    recorder.msg_list.append(msg)
-'''
-
-@on_group_message(name='nick_call')
-def nick_call(msg, bot):
-    if "我是谁" == msg.content:
-        profile = bot.get_group_member_info(msg.group_code, msg.send_uin)
-        bot.reply_msg(msg, "你是{}!".format(profile['nick']))
+@on_all_message(name='nickname')
+def nickname(msg, bot):
+    if str(msg.from_uin) in uin:
+        if (msg.content.rfind("小浩")==0 and "小浩，" not in msg.content) or "有人吗" in msg.content:
+            reply = bot.reply_msg(msg, return_function=True)
+            logger.info("RUNTIMELOG " + str(msg.from_uin) + " calling me out, trying to reply....")
+            reply_content = random.choice(REPLY_CONTENT) + random.choice(REPLY_SUFFIX)
+            reply(reply_content)

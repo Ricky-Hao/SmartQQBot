@@ -3,11 +3,10 @@ import json
 import os
 from random import randint
 import re
-
+import sqlite3
 from smart_qq_bot.logger import logger
 from smart_qq_bot.messages import PrivateMsg
 from smart_qq_bot.signals import on_group_message, on_private_message
-
 
 class Satoru(object):
 
@@ -62,7 +61,15 @@ class Satoru(object):
 
 
 satoru = Satoru("satoru.json")
-
+con = sqlite3.connect("./config/data.db")
+cur=con.cursor()
+cur.execute('select uin from uin_plugins where plugin_name="satoru";')
+a=cur.fetchall()
+uin=[]
+for i in a:
+    uin.append(i[0])
+cur.close()
+con.close()
 
 @on_group_message(name="satoru")
 def send_msg(msg, bot):
@@ -70,18 +77,20 @@ def send_msg(msg, bot):
     :type bot: smart_qq_bot.bot.QQBot
     :type msg: smart_qq_bot.messages.GroupMsg
     """
-    result = satoru.is_learn(msg.content)
-    if result:
-        key, value = result
-        satoru.add_rule(key, value)
-    else:
-        response = satoru.match(msg.content)
-        if response:
-            bot.reply_msg(msg, response)
+    if str(msg.from_uin) in uin:
+        result = satoru.is_learn(msg.content)
+        if result:
+            key, value = result
+            satoru.add_rule(key, value)
+        else:
+            response = satoru.match(msg.content)
+            if response:
+                bot.reply_msg(msg, response)
 
 
 @on_private_message(name="satoru")
 def remove(msg, bot):
-    result = satoru.is_remove(msg.content)
-    if result:
-        satoru.remove_rule(result)
+    if str(msg.from_uin) in uin:
+        result = satoru.is_remove(msg.content)
+        if result:
+            satoru.remove_rule(result)

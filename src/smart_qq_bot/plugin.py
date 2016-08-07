@@ -76,19 +76,21 @@ class PluginManager(object):
             try:
                 __import__(package_name)
                 logger.info("Package plugin [%s] loaded." % package_name)
-            except ImportError:
+            except ImportError as e:
                 logger.error(
                     "Package plugin import error: can not import [%s]"
                     % package_name
                 )
+                logger.error(e)
 
     def _load_default(self):
         for plugin_name in self.config[PLUGIN_ON]:
             try:
                 __import__(self._gen_plugin_name(plugin_name))
                 logger.info("Plugin [%s] loaded." % plugin_name)
-            except ImportError:
+            except ImportError as e:
                 logger.error(
                     "Internal plugin import error: can not import [%s]"
                     % plugin_name
                 )
+                logger.error(e)
