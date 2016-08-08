@@ -49,10 +49,7 @@ def turing_robot(msg, bot):
         with open("./config/group_code.json","r") as f:
             group_code=json.load(f)
 
-        if str(msg.group_code) in group_code.values():
-            if msg.content.rfind(nickname+"，")==0:
-                response = requests.get(url,headers=headers,params=querystring)
-
-                response_json = response.json()
-
-                bot.reply_msg(msg, response_json.get('text').strip("亲爱的，"))
+        if msg.content.rfind(nickname+"，")==0:
+            response = requests.get(url,headers=headers,params=querystring)
+            response_json = response.json()
+            bot.reply_msg(msg, response_json.get('text').strip("亲爱的，"))

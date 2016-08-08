@@ -24,10 +24,8 @@ con.close()
 def meow(msg,bot):
     if str(msg.from_uin) in uin:
         if "喵喵喵" in msg.content:
-            logger.info('Meow to '+str(msg.group_code))
             bot.reply_msg(msg,"喵喵喵"+random.choice(REPLY_SUFFIX))
         '''elif "喵" in msg.content and "小喵" not in msg.content:
-            logger.info('Meow to '+str(msg.group_code))
             bot.reply_msg(msg,"喵"+random.choice(REPLY_SUFFIX))'''
         return True
     return False
