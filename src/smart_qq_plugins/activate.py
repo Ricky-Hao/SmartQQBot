@@ -18,15 +18,18 @@ def activate(msg,bot):
     if msg.content.rfind("!召唤 ")==0:
         name=msg.content[4:]
         con = sqlite3.connect("./config/data.db")
-        with open("./config/plugin.json","r") as f:
-            plugins=json.load(f).get('plugin_on')
-        for i in plugins:
-            con.execute("insert into uin_plugins(uin,plugin_name) values (?,?);",(msg.from_uin,i))
-        for i in REPLY_CONTENT:
-            con.execute("insert into basic(uin,nickname,content) values (?,?,?);",(msg.from_uin,name,i))
-        con.commit()
-        con.close()
-        bot.reply_msg(msg,"召唤{0}成功~".format(name))
+        if len(con.execute('select * from basic where uin="{0}";'.format(str(msg.from_uin))).fetchall())==0:
+            with open("./config/plugin.json","r") as f:
+                plugins=json.load(f).get('plugin_on')
+            for i in plugins:
+                con.execute("insert into uin_plugins(uin,plugin_name) values (?,?);",(msg.from_uin,i))
+            for i in REPLY_CONTENT:
+                con.execute("insert into basic(uin,nickname,content) values (?,?,?);",(msg.from_uin,name,i))
+            con.commit()
+            con.close()
+            bot.reply_msg(msg,"召唤{0}成功~".format(name))
+        else:
+            bot.reply_msg(msg,"已经召唤过{0}啦~".format(name))
     if msg.content.rfind("!关闭 ")==0:
         con = sqlite3.connect("./config/data.db")
         plugin_name=msg.content[4:]

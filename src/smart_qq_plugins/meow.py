@@ -1,7 +1,7 @@
 # coding:utf-8
 import random
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import on_group_message
+from smart_qq_bot.signals import on_all_message
 import json
 import sqlite3
 
@@ -20,7 +20,7 @@ for i in a:
 cur.close()
 con.close()
 
-@on_group_message(name='meow')
+@on_all_message(name='meow')
 def meow(msg,bot):
     if str(msg.from_uin) in uin:
         if "喵喵喵" in msg.content:

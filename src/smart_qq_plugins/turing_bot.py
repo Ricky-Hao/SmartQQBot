@@ -3,7 +3,7 @@ from random import randint
 import requests
 import json
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import on_group_message
+from smart_qq_bot.signals import on_all_message
 import sqlite3
 import base64
 
@@ -27,7 +27,7 @@ cur.close()
 con.close()
 
 
-@on_group_message(name='turing_bot')
+@on_all_message(name='turing_bot')
 def turing_robot(msg, bot):
     """
     :type bot: smart_qq_bot.bot.QQBot
@@ -44,7 +44,7 @@ def turing_robot(msg, bot):
             querystring = {
                 "key": f.read().strip('\n'),
                 "info": msg.content.strip(nickname+"，"),
-                "userid": base64.b64encode(nickname)
+                "userid": base64.b64encode(nickname.encode())
             }
         with open("./config/group_code.json","r") as f:
             group_code=json.load(f)
