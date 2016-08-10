@@ -14,10 +14,11 @@ import base64
 # 申请 API 谢谢
 # 另外需要 requests 支持
 url = "http://apis.baidu.com/turing/turing/turing"
-with open("./config/baidu_api_key.conf","r") as f:
-    headers = {
-        'apikey': f.read().strip('\n')
-    }
+with open('./config/API_Key.json','r') as f:
+    API_KEY=json.load(f)
+headers = {
+    'apikey': API_KEY.get('Baidu')
+}
 plugin_name='Tuling_bot'
 ######
 
@@ -53,18 +54,15 @@ def Tuling_robot_group(msg, bot):
     :type msg: smart_qq_bot.messages.QMessage
     """
     update_id(plugin_name)
-    gc=bot.msg_to_group_id(msg)
+    gc=msg.group_id
     if in_group(gc):
         nickname=sql.fetch_one('select nickname from Nickname_group where group_id="{0}";'.format(gc))[0]
         if is_match('^'+nickname+'\W(.+)',msg.content):
-            with open("./config/turing_api_key.conf","r") as f:
-                querystring = {
-                    "key": f.read().strip('\n'),
-                    "info": is_match('^'+nickname+'\W(.+)',msg.content).group(1),
-                    "userid": base64.b64encode(nickname.encode())
-                }
-            with open("./config/group_code.json","r") as f:
-                group_code=json.load(f)
+            querystring = {
+                "key": API_KEY.get('Tuling'),
+                "info": is_match('^'+nickname+'\W(.+)',msg.content).group(1),
+                "userid": base64.b64encode(nickname.encode())
+            }
 
             if is_match('^'+nickname+'\W(.+)',msg.content):
                 response = requests.get(url,headers=headers,params=querystring)
@@ -79,18 +77,15 @@ def Tuling_robot_private(msg, bot):
     :type msg: smart_qq_bot.messages.QMessage
     """
     update_id(plugin_name)
-    qq=str(bot.uin_to_account(msg.from_uin))
+    qq=msg.private_id
     if in_private(qq):
         nickname=sql.fetch_one('select nickname from Nickname_private where private_id="{0}";'.format(qq))[0]
         if is_match('^'+nickname+'\W.+',msg.content):
-            with open("./config/turing_api_key.conf","r") as f:
-                querystring = {
-                    "key": f.read().strip('\n'),
-                    "info": is_match('^'+nickname+'\W(.+)',msg.content).group(1),
-                    "userid": base64.b64encode(nickname.encode())
-                }
-            with open("./config/group_code.json","r") as f:
-                group_code=json.load(f)
+            querystring = {
+                "key": API_KEY.get('Tuling'),
+                "info": is_match('^'+nickname+'\W(.+)',msg.content).group(1),
+                "userid": base64.b64encode(nickname.encode())
+            }
 
             if is_match('^'+nickname+'\W(.+)',msg.content):
                 response = requests.get(url,headers=headers,params=querystring)

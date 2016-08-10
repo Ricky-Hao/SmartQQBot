@@ -46,13 +46,13 @@ update_id(plugin_name)
 @on_group_message(name=plugin_name)
 def Meow_group(msg,bot):
     update_id(plugin_name)
-    gc=bot.msg_to_group_id(msg)
+    gc=msg.group_id
     if in_group(gc) and is_match(r'^喵{1,}\W*$',msg.content):
         bot.reply_msg(msg,'喵'*random.randint(1,6)+random.choice(REPLY_SUFFIX))
 
 @on_private_message(name=plugin_name)
 def Meow_private(msg,bot):
     update_id(plugin_name)
-    qq=str(bot.uin_to_account(msg.from_uin))
+    qq=msg.private_id
     if in_private(qq) and is_match(r'^喵{1,}\W*$',msg.content):
         bot.reply_msg(msg,'喵'*random.randint(1,6)+random.choice(REPLY_SUFFIX))

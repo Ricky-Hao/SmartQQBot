@@ -39,9 +39,9 @@ update_id(plugin_name)
 def NetEaseMusic(msg,bot):
     update_id(plugin_name)
     if msg.type=="group_message":
-        number=bot.msg_to_group_id(msg)
+        number=msg.group_id
     else:
-        number=str(bot.uin_to_account(msg.from_uin))
+        number=msg.private_id
     if (in_group(number) or in_private(number)) and is_match(r'^音乐 (.*)$',msg.content):
         music_name=is_match(r'^音乐 (.*)$',msg.content).group(1)
         url="http://music.163.com/api/search/get/"

@@ -80,6 +80,7 @@ class PrivateMsg(QMessage):
         super(PrivateMsg, self).__init__(msg_dict)
         self.to_uin = msg_dict['value']['to_uin']
         self.from_uin = msg_dict['value']['from_uin']
+        self.private_id=msg_dict['private_id']
 
 
 class GroupMsg(QMessage):
@@ -89,6 +90,7 @@ class GroupMsg(QMessage):
         self.group_code = msg_dict['value']['group_code']
         self.send_uin = msg_dict['value']['send_uin']
         self.from_uin = msg_dict['value']['from_uin']
+        self.group_id=msg_dict['group_id']
 
 MSG_TYPE_MAP = {
     GROUP_MSG: GroupMsg,
@@ -99,5 +101,9 @@ MSG_TYPE_MAP = {
 }
 
 
-def mk_msg(msg_dict):
+def mk_msg(msg_dict,bot):
+    if msg_dict['poll_type'] == GROUP_MSG:
+        msg_dict['group_id']=bot.uin_to_group_id(msg_dict['value']['from_uin'])
+    elif msg_dict['poll_type']==PRIVATE_MSG:
+        msg_dict['private_id']=str(bot.uin_to_account(msg_dict['value']['from_uin']))
     return MSG_TYPE_MAP[msg_dict['poll_type']](msg_dict)

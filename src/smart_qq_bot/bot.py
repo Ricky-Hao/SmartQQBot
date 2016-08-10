@@ -311,6 +311,7 @@ class QQBot(object):
             return
 
         ret_code = ret['retcode']
+        #logger.info(ret)
 
         if ret_code in (103, ):
             logger.warning(
@@ -340,7 +341,7 @@ class QQBot(object):
         """
         uin_str = str(tuin)
         try:
-            logger.debug("RUNTIMELOG Requesting the account by uin:    " + str(tuin))
+            logger.debug("[UIN_TO_ACCOUNT] " + str(tuin))
             info = json.loads(
                 self.client.get(
                     'http://s.web2.qq.com/api/get_friend_uin2?tuin={0}&type=1&vfwebqq={1}&t={2}'.format(
@@ -414,7 +415,6 @@ class QQBot(object):
             return None
 
         online_buddies = online_buddies['result']
-        logger.debug(online_buddies)
         return online_buddies
 
     def get_friend_info(self, tuin):
@@ -622,6 +622,20 @@ class QQBot(object):
             sql.execute('insert into group_data(group_id,group_name) values("{0}","{1}");'.format(str(i['gc']),i['gn']))
         for i in self.group_code_list.values():
             sql.execute('update group_data set group_code = "{0}" where group_name = "{1}";'.format(str(i['gid']),i['name']))
+
+    def uin_to_group_id(self,uin):
+        #从msg.from_uin获取到的uin
+        #得到真实群号
+        if str(uin) not in self.group_code_list:
+            logger.info("尝试更新群列表信息")
+            self.get_group_list_with_group_code()
+            if str(uin) not in self.group_code_list:
+                logger.warning("没有所查询的group_code, 请检查group_code是否错误")
+                return 0
+            else:
+                self.group_database()
+        else:
+            return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]
 
     def msg_to_group_id(self,msg):
         #从msg.from_uin获取到的uin

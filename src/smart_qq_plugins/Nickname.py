@@ -72,7 +72,7 @@ from smart_qq_bot.signals import (
 # 机器人连续回复相同消息时可能会出现
 # 服务器响应成功,但实际并没有发送成功的现象
 # 所以尝试通过随机后缀来尽量避免这一问题
-name='Nickname'
+plugin_name='Nickname'
 REPLY_SUFFIX = [
     '~',
     '!',
@@ -142,17 +142,17 @@ def in_private(qq):
 
 #########初始化代码#################
 #判断插件是否已经初始化（即存不存在插件名的数据库）
-if not sql.check_table(name+'_group'):
+if not sql.check_table(plugin_name+'_group'):
     Nickname_init()
 #更新数据
-update_data(name)
+update_data(plugin_name)
 
 #########调用函数##################
 
 ##########################群版本#######################################
 #注册该函数到 on_group_message handler
 #唤出函数
-@on_group_message(name=name)
+@on_group_message(name=plugin_name)
 def group_callout(msg, bot):
     '''
     从消息msg中，提取from_uin
@@ -163,10 +163,10 @@ def group_callout(msg, bot):
         'group_code':    87654321
     }
     '''
-    update_data(name)
+    update_data(plugin_name)
     global group_data
 
-    gc=bot.msg_to_group_id(msg)
+    gc=msg.group_id
     #检查该群是否启用该插件
     if in_group(gc):
         '''
@@ -188,13 +188,14 @@ def group_callout(msg, bot):
 
 #控制函数
 #可以列出、增、删content,suffix
-@on_group_message(name=name)
+@on_group_message(name=plugin_name)
 def group_control(msg,bot):
-    global name
-    update_data(name)
-    gc=bot.msg_to_group_id(msg)
+    update_data(plugin_name)
+    gc=msg.group_id
     #检查该群是否启用该插件
     if in_group(gc):
+        name=group_data[gc]
+        #logger.debug(name)
         if is_match('^!'+name+' list (content|suffix)$',msg.content):
             #提取操作数content或者suffix
             opt=is_match('^!'+name+' list (content|suffix)$',msg.content).group(1)
@@ -206,7 +207,7 @@ def group_control(msg,bot):
             for i in tmp:
                 s+=i+'\n'
             bot.reply_msg(msg,s)
-            update_data(name)
+            update_data(plugin_name)
 
         elif is_match('^!'+name+' add (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
@@ -219,7 +220,7 @@ def group_control(msg,bot):
             tmp.append(content)
             #将list转换为json写入数据库
             sql.execute("update Nickname_group set '{0}' = '{1}' where group_id = '{2}';".format(opt,json.dumps(tmp),gc))
-            update_data(name)
+            update_data(plugin_name)
 
         elif is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
@@ -232,22 +233,26 @@ def group_control(msg,bot):
             tmp.remove(content)
             #将list转换为json写入数据库
             sql.execute("update Nickname_group set '{0}' = '{1}' where group_id = '{2}';".format(opt,json.dumps(tmp),gc))
-            update_data(name)
-
+            update_data(plugin_name)
+        elif is_match('^!'+name+' rename (.*)$',msg.content):
+            rename=is_match('^!'+name+' rename (.*)$',msg.content).group(1)
+            logger.info('[Nickname] '+gc+' rename to '+rename)
+            sql.execute('update Nickname_group set nickname = "{0}" where group_id = "{1}";'.format(rename,gc))
+            bot.reply_msg(msg,'大召唤术！'+rename)
+            update_data(plugin_name)
 
 ##################私聊版本#####################################
 #注册该函数到 on_private_message handler
 #唤出函数
-@on_private_message(name=name)
+@on_private_message(name=plugin_name)
 def private_callout(msg,bot):
     '''
     从消息msg中，提取from_uin
     从bot对象中，用msg.from_uin来通过bot.uin_to_account()函数提取对应的QQ号
     '''
-    update_data(name)
+    update_data(plugin_name)
     global private_data
-
-    qq=str(bot.uin_to_account(msg.from_uin))
+    qq=msg.private_id
     #检查该群是否启用该插件
     if in_private(qq):
         '''
@@ -269,13 +274,13 @@ def private_callout(msg,bot):
 
 #控制函数
 #可以列出、增、删content,suffix
-@on_private_message(name=name)
+@on_private_message(name=plugin_name)
 def private_control(msg,bot):
-    global name
-    update_data(name)
-    qq=str(bot.uin_to_account(msg.from_uin))
+    update_data(plugin_name)
+    qq=msg.private_id
     #检查该群是否启用该插件
     if in_private(qq):
+        name=private_data[qq]
         if is_match('^!'+name+' list (content|suffix)$',msg.content):
             #提取操作数content或者suffix
             opt=is_match('^!'+name+' list (content|suffix)$',msg.content).group(1)
@@ -287,7 +292,7 @@ def private_control(msg,bot):
             for i in tmp:
                 s+=i+'\n'
             bot.reply_msg(msg,s)
-            update_data(name)
+            update_data(plugin_name)
 
         elif is_match('^!'+name+' add (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
@@ -300,7 +305,7 @@ def private_control(msg,bot):
             tmp.append(content)
             #将list转换为json写入数据库
             sql.execute("update Nickname_private set '{0}' = '{1}' where private_id = '{2}';".format(opt,json.dumps(tmp),qq))
-            update_data(name)
+            update_data(plugin_name)
 
         elif is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
@@ -313,4 +318,10 @@ def private_control(msg,bot):
             tmp.remove(content)
             #将list转换为json写入数据库
             sql.execute("update Nickname_private set '{0}' = '{1}' where private_id = '{2}';".format(opt,json.dumps(tmp),qq))
-            update_data(name)
+            update_data(plugin_name)
+        elif is_match('^!'+name+' rename (.*)$',msg.content):
+            rename=is_match('^!'+name+' rename (.*)$',msg.content).group(1)
+            logger.info('[Nickname] '+qq+' rename to '+rename)
+            sql.execute('update Nickname_private set nickname = "{0}" where private_id = "{1}";'.format(rename,qq))
+            bot.reply_msg(msg,'大召唤术！'+rename)
+            update_data(plugin_name)

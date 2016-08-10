@@ -39,7 +39,7 @@ update_data(plugin_name)
 @on_group_message(name=plugin_name)
 def do_Activate(msg,bot):
     #获取群号
-    gc=bot.msg_to_group_id(msg)
+    gc=msg.group_id
     if not in_group(gc) and is_match(r'^!召唤 (.*)$',msg.content):
         #捕获昵称
         nickname=is_match(r'^!召唤 (.*)$',msg.content).group(1)
@@ -50,7 +50,7 @@ def do_Activate(msg,bot):
             plugin_list=json.load(f).get('plugin_on')
         for p in plugin_list:
             sql.execute("insert into plugins_group(group_id,plugin_name) values('{0}','{1}');".format(gc,p))
-        logger.info('[Activate] '+gc+'activate success')
+        logger.info('[Activate] '+gc+' activate success')
         bot.reply_msg(msg,'召唤'+nickname+'成功~')
         update_data(plugin_name)
 
@@ -75,7 +75,7 @@ def do_Activate(msg,bot):
     #启用插件
     elif in_group(gc) and is_match(r'^!启用 (.*)$',msg.content):
         open_plugin_name=is_match(r'^!启用 (.*)$',msg.content).group(1)
-        sql.execute("insert into plugins_group(group_id,plugin_name) values ('{0}','{1}');".format(gc,plugin_name))
+        sql.execute("insert into plugins_group(group_id,plugin_name) values ('{0}','{1}');".format(gc,open_plugin_name))
         logger.info('[Activate] '+gc+' activate '+open_plugin_name)
         bot.reply_msg(msg,"开启{0}插件成功~".format(open_plugin_name))
         update_data(plugin_name)
@@ -92,7 +92,7 @@ def do_Activate(msg,bot):
 @on_private_message(name=plugin_name)
 def do_Activate(msg,bot):
     #获取群号
-    qq=str(bot.uin_to_account(msg.from_uin))
+    qq=msg.private_id
     if not in_private(qq) and is_match(r'^!召唤 (.*)$',msg.content):
         #捕获昵称
         nickname=is_match(r'^!召唤 (.*)$',msg.content).group(1)
@@ -103,7 +103,7 @@ def do_Activate(msg,bot):
             plugin_list=json.load(f).get('plugin_on')
         for p in plugin_list:
             sql.execute("insert into plugins_private(private_id,plugin_name) values('{0}','{1}');".format(qq,p))
-        logger.info('[Activate] '+qq+'activate success')
+        logger.info('[Activate] '+qq+' activate success')
         bot.reply_msg(msg,'召唤'+nickname+'成功~')
         update_data(plugin_name)
     elif in_private(qq) and is_match(r'^!召唤 (.*)$',msg.content):
