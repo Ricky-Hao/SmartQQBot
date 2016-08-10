@@ -63,11 +63,11 @@ class Satoru(object):
 satoru = Satoru("satoru.json")
 con = sqlite3.connect("./config/data.db")
 cur=con.cursor()
-cur.execute('select uin from uin_plugins where plugin_name="satoru";')
+cur.execute('select group_id from plugins_group where plugin_name="satoru";')
 a=cur.fetchall()
-uin=[]
+group_id=[]
 for i in a:
-    uin.append(i[0])
+    group_id.append(i[0])
 cur.close()
 con.close()
 
@@ -77,7 +77,7 @@ def send_msg(msg, bot):
     :type bot: smart_qq_bot.bot.QQBot
     :type msg: smart_qq_bot.messages.GroupMsg
     """
-    if str(msg.from_uin) in uin:
+    if str(bot.get_group_info(group_code=str(msg.from_uin))) in group_id:
         result = satoru.is_learn(msg.content)
         if result:
             key, value = result
@@ -90,7 +90,7 @@ def send_msg(msg, bot):
 
 @on_private_message(name="satoru")
 def remove(msg, bot):
-    if str(msg.from_uin) in uin:
+    if str(bot.get_group_info(group_code=str(msg.from_uin))) in group_id:
         result = satoru.is_remove(msg.content)
         if result:
             satoru.remove_rule(result)

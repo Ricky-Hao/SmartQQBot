@@ -1,31 +1,58 @@
 # coding:utf-8
 import random
+import re
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import on_all_message
+from smart_qq_bot.signals import on_group_message,on_private_message
+import smart_qq_bot.sqlite as sql 
 import json
 import sqlite3
 
+#######################################
 REPLY_SUFFIX = (
     '~',
     '!',
     '?'
 )
-con = sqlite3.connect("./config/data.db")
-cur=con.cursor()
-cur.execute('select uin from uin_plugins where plugin_name="meow";')
-a=cur.fetchall()
-uin=[]
-for i in a:
-    uin.append(i[0])
-cur.close()
-con.close()
 
-@on_all_message(name='meow')
-def meow(msg,bot):
-    if str(msg.from_uin) in uin:
-        if "喵喵喵" in msg.content:
-            bot.reply_msg(msg,"喵喵喵"+random.choice(REPLY_SUFFIX))
-        '''elif "喵" in msg.content and "小喵" not in msg.content:
-            bot.reply_msg(msg,"喵"+random.choice(REPLY_SUFFIX))'''
-        return True
-    return False
+plugin_name="Meow"
+#######################################
+
+#######################################
+def update_id(name):
+    global group_id
+    global private_id
+    
+    private_id=sql.get_private_id(name)
+    group_id=sql.get_group_id(name)
+
+def in_group(gc):
+    global group_id
+    return gc in group_id
+
+def in_private(qq):
+    global private_id
+    return qq in private_id
+
+def is_match(p,s):
+    return re.match(p,s)
+######################################
+
+######################################
+update_id(plugin_name)
+######################################
+
+######################################
+
+@on_group_message(name=plugin_name)
+def Meow_group(msg,bot):
+    update_id(plugin_name)
+    gc=bot.msg_to_group_id(msg)
+    if in_group(gc) and is_match(r'^喵{1,}\W*$',msg.content):
+        bot.reply_msg(msg,'喵'*random.randint(1,6)+random.choice(REPLY_SUFFIX))
+
+@on_private_message(name=plugin_name)
+def Meow_private(msg,bot):
+    update_id(plugin_name)
+    qq=str(bot.uin_to_account(msg.from_uin))
+    if in_private(qq) and is_match(r'^喵{1,}\W*$',msg.content):
+        bot.reply_msg(msg,'喵'*random.randint(1,6)+random.choice(REPLY_SUFFIX))

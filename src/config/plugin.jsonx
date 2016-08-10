@@ -1,9 +1,11 @@
 {
   "plugin_packages": [],
   "plugin_on": [
-      "manager",
-      "basic",
-      "tucao",
-      "weather"
+    "Activate",
+    "Nickname",
+    "Meow",
+    "NetEaseMusic",
+    "Weather",
+    "Tuling_bot"
   ]
 }

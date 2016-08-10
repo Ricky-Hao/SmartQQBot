@@ -9,6 +9,7 @@ import json
 from random import randint
 from threading import Thread
 
+import smart_qq_bot.sqlite as sql
 from smart_qq_bot.logger import logger
 from smart_qq_bot.config import QR_CODE_PATH, SMART_QQ_REFER
 from smart_qq_bot.http_client import HttpClient
@@ -65,7 +66,6 @@ class QQBot(object):
         self.group_code_list = {}
         self.group_id_list = {}
         self.group_member_info = {}
-
         self._group_sig_list = {}
         self._self_info = {}
 
@@ -281,6 +281,7 @@ class QQBot(object):
             )
             exit(1)
         logger.info("RUNTIMELOG QQ：{0} login successfully, Username：{1}".format(self.account, self.username))
+        self.group_database()
 
     def check_msg(self):
 
@@ -339,7 +340,7 @@ class QQBot(object):
         """
         uin_str = str(tuin)
         try:
-            logger.info("RUNTIMELOG Requesting the account by uin:    " + str(tuin))
+            logger.debug("RUNTIMELOG Requesting the account by uin:    " + str(tuin))
             info = json.loads(
                 self.client.get(
                     'http://s.web2.qq.com/api/get_friend_uin2?tuin={0}&type=1&vfwebqq={1}&t={2}'.format(
@@ -413,6 +414,7 @@ class QQBot(object):
             return None
 
         online_buddies = online_buddies['result']
+        logger.debug(online_buddies)
         return online_buddies
 
     def get_friend_info(self, tuin):
@@ -600,6 +602,40 @@ class QQBot(object):
                 logger.warning("没有所查询的group_code, 请检查group_code是否错误")
                 return 0
         return str(self.group_code_list[fake_group_code]['code'])
+    '''
+    测试失败
+    def msg_to_account(self,msg):
+        tmp=sql.fetch_one('select private_id from private_data where private_code = "{0}";'.format(str(msg.from_uin)))
+        if not isinstance(tmp,tuple):
+            sql.execute('insert into private_data(private_code) values("{0}")'.format(str(msg.from_uin)))
+            account=str(self.uin_to_account(msg.from_uin))
+            sql.execute('delete from private_data where private_id="{0}";'.format(account))
+            sql.execute('update private_data set private_id="{0}" where private_code="{1}";'.format(account,str(msg.from_uin)))
+            return account
+        else:
+            tmp[0]
+    '''
+
+    def group_database(self):
+        sql.execute('delete from group_data;')
+        for i in self.group_id_list.values():
+            sql.execute('insert into group_data(group_id,group_name) values("{0}","{1}");'.format(str(i['gc']),i['gn']))
+        for i in self.group_code_list.values():
+            sql.execute('update group_data set group_code = "{0}" where group_name = "{1}";'.format(str(i['gid']),i['name']))
+
+    def msg_to_group_id(self,msg):
+        #从msg.from_uin获取到的uin
+        #得到真实群号
+        if str(msg.from_uin) not in self.group_code_list:
+            logger.info("尝试更新群列表信息")
+            self.get_group_list_with_group_code()
+            if str(msg.from_uin) not in self.group_code_list:
+                logger.warning("没有所查询的group_code, 请检查group_code是否错误")
+                return 0
+            else:
+                self.group_database()
+        else:
+            return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(msg.from_uin))[0]
 
     def get_group_info(self, group_code=None, group_id=None):
         """
@@ -613,6 +649,7 @@ class QQBot(object):
             'group_code':    87654321
         }
         """
+        logger.debug(self.group_id_list)
         if group_code or group_id:
             if group_code:
                 assert isinstance(group_code, str), "group_code类型错误, 应该为str"
@@ -628,7 +665,7 @@ class QQBot(object):
                     'group_code':   group_code_info['code'] or 0
                 }
                 name = group_code_info['name'].replace(' ', '&nbsp;')
-                group_id_list = filter(lambda x:x['gn'] == name, group_id_list)
+                group_id_list = list(filter(lambda x:x['gn'] == name, group_id_list))
                 if len(group_id_list) == 1:
                     result['id'] = group_id_list[0].get('gc')
                     return result
@@ -649,7 +686,7 @@ class QQBot(object):
                     'id': group_id_info['gc'] or 0,
                     'group_code': 0
                 }
-                group_code_list = filter(lambda x:x['name'] == group_id_info['gn'], group_code_list)
+                group_code_list = list(filter(lambda x:x['name'] == group_id_info['gn'], group_code_list))
                 if len(group_code_list) == 1:
                     result['group_code'] = group_code_list[0].get('code')
                     return result

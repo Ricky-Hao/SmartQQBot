@@ -1,14 +1,11 @@
 {
   "plugin_packages": [],
   "plugin_on": [
-  "activate.py",
-    "basic",
-    "manager",
+    "Activate",
+    "Nickname",
+    "Meow",
     "NetEaseMusic",
-	  "meow",
-	  "turing_bot",
-	  "weather",
-    "sqlite",
-    "satoru"
+    "Weather",
+    "Tuling_bot"
   ]
 }
