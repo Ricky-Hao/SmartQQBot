@@ -23,9 +23,9 @@ def Wiki(msg,bot):
                 try:
                     result=json.loads(tmp.text)[2]
                     for i in result:
-                        bot.reply_msg(msg,s)
+                        bot.reply_msg(msg,i)
                 except Exception as e:
-                    logger.info(e)
+                    logger.debug(e)
             else:
                 bot.reply_msg(msg,"网络出错了哦~")
                 
