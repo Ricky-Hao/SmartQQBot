@@ -19,12 +19,10 @@ def Wiki(msg,bot):
             params['search']=utils.is_match('^(百科|Wiki) (.*)$',msg.content).group(1)
             tmp=requests.get(url,params=params,proxies=proxies)
             if tmp.status_code==200:
-                s=""
                 try:
                     result=json.loads(tmp.text)[2]
                     for i in result:
-                        s+=i+'\n'
-                    bot.reply_msg(msg,s)
+                        bot.reply_msg(msg,s)
                 except:
                     pass
             else:
