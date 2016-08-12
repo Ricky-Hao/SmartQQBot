@@ -92,12 +92,20 @@ class GroupMsg(QMessage):
         self.from_uin = msg_dict['value']['from_uin']
         self.group_id=msg_dict['group_id']
 
+class DiscuMsg(QMessage):
+    def __init__(self,msg_dict):
+        super(DiscuMsg,self).__init__(msg_dict)
+        self.send_uin = msg_dict['value']['send_uin']
+        self.from_uin = msg_dict['value']['from_uin']
+        self.did=msg_dict['value']['did']
+
 MSG_TYPE_MAP = {
     GROUP_MSG: GroupMsg,
     INPUT_NOTIFY_MSG: QMessage,
     KICK_MSG: QMessage,
     SESS_MSG: SessMsg,
     PRIVATE_MSG: PrivateMsg,
+    DISCU_MSG:
 }
 
 

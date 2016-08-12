@@ -14,7 +14,10 @@ def get_account_and_type(msg):
     if msg.type=="group_message":
         account_type='group'
         account=msg.group_id
-    else:
+    elif msg.type=="message":
         account_type='private'
         account=msg.private_id
+    else:
+        account_type='discu'
+        account=msg.did
     return (account,account_type)
