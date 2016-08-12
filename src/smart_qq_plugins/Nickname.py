@@ -2,14 +2,10 @@
 import random
 import re
 import json
-import sqlite3
 import smart_qq_bot.sqlite as sql
+import smart_qq_bot.utils as utils
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import (
-    on_all_message,
-    on_group_message,
-    on_private_message,
-)
+from smart_qq_bot.signals import on_all_message
 
 ######################插件编写教程#########################
 #sql库是内置的对数据库进行操作的一个接口
@@ -94,234 +90,82 @@ def Nickname_init():
     '''
     Nickname 数据库初始化函数
     '''
-    sql.execute("create table if not exists Nickname_group(id integer primary key autoincrement unique not null, \
-    nickname varchar(100), group_id varchar(40), content varchar(1000), suffix varchar(100));")
-    sql.execute("insert into Nickname_group(group_id,nickname,content,suffix) values('{0}','{1}','{2}','{3}')".format("00000","baseline",json.dumps(REPLY_CONTENT),json.dumps(REPLY_SUFFIX)))
+    sql.execute("create table if not exists Nickname(id integer primary key autoincrement unique not null, \
+    nickname varchar(100), account varchar(40), content varchar(1000), suffix varchar(100),account_type varchar(20));")
+    sql.execute("insert into Nickname(account,nickname,content,suffix,account_type) values('{0}','{1}','{2}','{3}','{4}');".format("00000","baseline",json.dumps(REPLY_CONTENT),json.dumps(REPLY_SUFFIX),'group'))
     
-    sql.execute("create table if not exists Nickname_private(id integer primary key autoincrement unique not null, \
-    nickname varchar(100), private_id varchar(40), content varchar(1000), suffix varchar(100));")
-    sql.execute("insert into Nickname_private(private_id,nickname,content,suffix) values('{0}','{1}','{2}','{3}')".format("00000","baseline",json.dumps(REPLY_CONTENT),json.dumps(REPLY_SUFFIX)))
-
-def is_match(p,s):
-    return re.match(p,s)
-
-def get_group_data():
-    #从 Nickname_group 中提取 群号：昵称 数据，并以字典的形式储存group_data{'group_id':'nickname'}
-    tmp=sql.fetch_all('select group_id,nickname from Nickname_group;')
-    group_data={}
-    for i in tmp:
-        group_data[i[0]]=i[1]
-    return group_data
-
-def get_private_data():
-    #从 Nickname_group 中提取 QQ号：昵称 数据，并以字典的形式储存private_data{'private_id':'nickname'}
-    tmp=sql.fetch_all('select private_id,nickname from Nickname_private;')
-    private_data={}
-    for i in tmp:
-        private_data[i[0]]=i[1]
-    return private_data
-
-def update_data(name):
-    global group_id
-    global group_data
-    global private_id
-    global private_data
-    
-    private_id=sql.get_private_id(name)
-    private_data=get_private_data()
-    group_id=sql.get_group_id(name)
-    group_data=get_group_data()
-
-def in_group(gc):
-    global group_id
-    return gc in group_id
-
-def in_private(qq):
-    global private_id
-    return qq in private_id
-
 #########初始化代码#################
 #判断插件是否已经初始化（即存不存在插件名的数据库）
-if not sql.check_table(plugin_name+'_group'):
+if not utils.check_table(plugin_name):
     Nickname_init()
-#更新数据
-update_data(plugin_name)
-
 #########调用函数##################
 
-##########################群版本#######################################
-#注册该函数到 on_group_message handler
+#################################################################
+#注册该函数到 on_all_message handler
 #唤出函数
-@on_group_message(name=plugin_name)
-def group_callout(msg, bot):
-    '''
-    从消息msg中，提取from_uin
-    从bot对象中，用msg.from_uin来通过bot.get_group_info()函数提取对应的群信息
-    {
-        'name':         "群名",
-        'id':            12345678,
-        'group_code':    87654321
-    }
-    '''
-    update_data(plugin_name)
-    global group_data
-
-    gc=msg.group_id
+@on_all_message(name=plugin_name)
+def Nickname(msg, bot):
+    (account,account_type)=utils.get_account_and_type(msg)
     #检查该群是否启用该插件
-    if in_group(gc):
+    if utils.in_plugins(account,account_type,plugin_name):
         '''
         使用正则判断
         例：
             nickname~  True
             nickname~~ False
         '''
-        if is_match('^'+group_data[gc]+r'.{0,1}$',msg.content):
+        nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
+        if utils.is_match('^'+nickname+r'.{0,1}$',msg.content):
             #在控制台输出log信息
-            logger.info("[Nickname] " + gc + " calling me out, trying to reply....")
+            logger.info("[Nickname] " + account_type+': '+account + " calling me out, trying to reply....")
 
             #从 该插件表 中获取一条制定群号的 content,suffix 数据
-            tmp=sql.fetch_one('select content,suffix from Nickname_group where group_id="{0}"'.format(gc))
+            tmp=sql.fetch_one('select content,suffix from Nickname where account="{0}" and account_type="{1}"'.format(account,account_type))
             '''
             从数据库加载content和suffix并用json解析，随机选择一个
             '''
             bot.reply_msg(msg,random.choice(json.loads(tmp[0]))+random.choice(json.loads(tmp[1])))
 
-#控制函数
-#可以列出、增、删content,suffix
-@on_group_message(name=plugin_name)
-def group_control(msg,bot):
-    update_data(plugin_name)
-    gc=msg.group_id
-    #检查该群是否启用该插件
-    if in_group(gc):
-        name=group_data[gc]
-        #logger.debug(name)
-        if is_match('^!'+name+' list (content|suffix)$',msg.content):
+            #列表功能
+        elif utils.is_match('^!'+nickname+' list (content|suffix)$',msg.content):
             #提取操作数content或者suffix
-            opt=is_match('^!'+name+' list (content|suffix)$',msg.content).group(1)
+            opt=utils.is_match('^!'+nickname+' list (content|suffix)$',msg.content).group(1)
             #在控制台输出log信息
-            logger.info("[Nickname] "+gc+" list "+opt)
+            logger.info("[Nickname] "+account_type+": "+account+" list "+opt)
             s=""
             #读取数据库相应数据，解析成json并拼接为回复内容
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_group where group_id="{1}";'.format(opt,gc))[0])
+            tmp=json.loads(sql.fetch_one('select {0} from Nickname where account="{1}" and account_type="{2}";'.format(opt,account,account_type))[0])
             for i in tmp:
                 s+=i+'\n'
             bot.reply_msg(msg,s)
-            update_data(plugin_name)
 
-        elif is_match('^!'+name+' add (content|suffix) (.*)$',msg.content):
+            #添加功能
+        elif utils.is_match('^!'+nickname+' add (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
-            opt=is_match('^!'+name+' add (content|suffix) (.*)$',msg.content).group(1)
-            content=is_match('^!'+name+' add (content|suffix) (.*)$',msg.content).group(2)
+            opt=utils.is_match('^!'+nickname+' add (content|suffix) (.*)$',msg.content).group(1)
+            content=utils.is_match('^!'+nickname+' add (content|suffix) (.*)$',msg.content).group(2)
             #写入数据库
             #先将数据库内的数据解析成list
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_group where group_id="{1}";'.format(opt,gc))[0])
+            tmp=json.loads(sql.fetch_one('select {0} from Nickname where account="{1}" and account_type="{2}";'.format(opt,account,account_type))[0])
             #将content加入list
             tmp.append(content)
             #将list转换为json写入数据库
-            sql.execute("update Nickname_group set '{0}' = '{1}' where group_id = '{2}';".format(opt,json.dumps(tmp),gc))
-            update_data(plugin_name)
+            sql.execute("update Nickname set '{0}' = '{1}' where account = '{2}' and account_type='{3}';".format(opt,json.dumps(tmp),account,account_type))
 
-        elif is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content):
+        elif utils.is_match('^!'+nickname+' remove (content|suffix) (.*)$',msg.content):
             #从命令中捕获操作数及数据
-            opt=is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content).group(1)
-            content=is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content).group(2)
+            opt=utils.is_match('^!'+nickname+' remove (content|suffix) (.*)$',msg.content).group(1)
+            content=utils.is_match('^!'+nickname+' remove (content|suffix) (.*)$',msg.content).group(2)
             #写入数据库
             #先将数据库内的数据解析成list
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_group where group_id="{1}";'.format(opt,gc))[0])
+            tmp=json.loads(sql.fetch_one('select {0} from Nickname where account="{1}" and account_type="{2}";'.format(opt,account,account_type))[0])
             #将content加入list
             tmp.remove(content)
             #将list转换为json写入数据库
-            sql.execute("update Nickname_group set '{0}' = '{1}' where group_id = '{2}';".format(opt,json.dumps(tmp),gc))
-            update_data(plugin_name)
-        elif is_match('^!'+name+' rename (.*)$',msg.content):
-            rename=is_match('^!'+name+' rename (.*)$',msg.content).group(1)
-            logger.info('[Nickname] '+gc+' rename to '+rename)
-            sql.execute('update Nickname_group set nickname = "{0}" where group_id = "{1}";'.format(rename,gc))
+            sql.execute("update Nickname set '{0}' = '{1}' where account = '{2}' and account_type='{3}';".format(opt,json.dumps(tmp),account,account_type))
+
+        elif utils.is_match('^!'+nickname+' rename (.*)$',msg.content):
+            rename=utils.is_match('^!'+nickname+' rename (.*)$',msg.content).group(1)
+            logger.info('[Nickname] '+account_type+": "+account+' rename to '+rename)
+            sql.execute('update Nickname set nickname = "{0}" where account = "{1}" and account_type="{2}";'.format(rename,account,account_type))
             bot.reply_msg(msg,'大召唤术！'+rename)
-            update_data(plugin_name)
-
-##################私聊版本#####################################
-#注册该函数到 on_private_message handler
-#唤出函数
-@on_private_message(name=plugin_name)
-def private_callout(msg,bot):
-    '''
-    从消息msg中，提取from_uin
-    从bot对象中，用msg.from_uin来通过bot.uin_to_account()函数提取对应的QQ号
-    '''
-    update_data(plugin_name)
-    global private_data
-    qq=msg.private_id
-    #检查该群是否启用该插件
-    if in_private(qq):
-        '''
-        使用正则判断
-        例：
-            nickname~  True
-            nickname~~ False
-        '''
-        if is_match('^'+private_data[qq]+r'.{0,1}$',msg.content):
-            #在控制台输出log信息
-            logger.info("[Nickname] " + qq + " calling me out, trying to reply....")
-
-            #从 该插件表 中获取一条制定群号的 content,suffix 数据
-            tmp=sql.fetch_one('select content,suffix from Nickname_private where private_id="{0}"'.format(qq))
-            '''
-            从数据库加载content和suffix并用json解析，随机选择一个
-            '''
-            bot.reply_msg(msg,random.choice(json.loads(tmp[0]))+random.choice(json.loads(tmp[1])))
-
-#控制函数
-#可以列出、增、删content,suffix
-@on_private_message(name=plugin_name)
-def private_control(msg,bot):
-    update_data(plugin_name)
-    qq=msg.private_id
-    #检查该群是否启用该插件
-    if in_private(qq):
-        name=private_data[qq]
-        if is_match('^!'+name+' list (content|suffix)$',msg.content):
-            #提取操作数content或者suffix
-            opt=is_match('^!'+name+' list (content|suffix)$',msg.content).group(1)
-            #在控制台输出log信息
-            logger.info("[Nickname] "+qq+" list "+opt)
-            s=""
-            #读取数据库相应数据，解析成json并拼接为回复内容
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_private where private_id="{1}";'.format(opt,qq))[0])
-            for i in tmp:
-                s+=i+'\n'
-            bot.reply_msg(msg,s)
-            update_data(plugin_name)
-
-        elif is_match('^!'+name+' add (content|suffix) (.*)$',msg.content):
-            #从命令中捕获操作数及数据
-            opt=is_match('^!'+name+' add (content|suffix) (.*)$',msg.content).group(1)
-            content=is_match('^!'+name+' add (content|suffix) (.*)$',msg.content).group(2)
-            #写入数据库
-            #先将数据库内的数据解析成list
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_private where private_id="{1}";'.format(opt,qq))[0])
-            #将content加入list
-            tmp.append(content)
-            #将list转换为json写入数据库
-            sql.execute("update Nickname_private set '{0}' = '{1}' where private_id = '{2}';".format(opt,json.dumps(tmp),qq))
-            update_data(plugin_name)
-
-        elif is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content):
-            #从命令中捕获操作数及数据
-            opt=is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content).group(1)
-            content=is_match('^!'+name+' remove (content|suffix) (.*)$',msg.content).group(2)
-            #写入数据库
-            #先将数据库内的数据解析成list
-            tmp=json.loads(sql.fetch_one('select {0} from Nickname_private where private_id="{1}";'.format(opt,qq))[0])
-            #将content加入list
-            tmp.remove(content)
-            #将list转换为json写入数据库
-            sql.execute("update Nickname_private set '{0}' = '{1}' where private_id = '{2}';".format(opt,json.dumps(tmp),qq))
-            update_data(plugin_name)
-        elif is_match('^!'+name+' rename (.*)$',msg.content):
-            rename=is_match('^!'+name+' rename (.*)$',msg.content).group(1)
-            logger.info('[Nickname] '+qq+' rename to '+rename)
-            sql.execute('update Nickname_private set nickname = "{0}" where private_id = "{1}";'.format(rename,qq))
-            bot.reply_msg(msg,'大召唤术！'+rename)
-            update_data(plugin_name)

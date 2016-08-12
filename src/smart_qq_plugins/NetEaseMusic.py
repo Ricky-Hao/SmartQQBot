@@ -1,49 +1,28 @@
 #coding=utf-8
 import requests
-import re
-import sqlite3
 from smart_qq_bot.logger import logger
 import smart_qq_bot.sqlite as sql
 from smart_qq_bot.signals import on_all_message
+import smart_qq_bot.utils as utils
 
 ######
 plugin_name="NetEaseMusic"
 ######
 
 ######
-def update_id(name):
-    global group_id
-    global private_id
-    
-    private_id=sql.get_private_id(name)
-    group_id=sql.get_group_id(name)
 
-def in_group(gc):
-    global group_id
-    return gc in group_id
-
-def in_private(qq):
-    global private_id
-    return qq in private_id
-
-def is_match(p,s):
-    return re.match(p,s)
 ######
 
 ######
-update_id(plugin_name)
+
 ######
 
 ######
 @on_all_message(name="NetEaseMusic")
 def NetEaseMusic(msg,bot):
-    update_id(plugin_name)
-    if msg.type=="group_message":
-        number=msg.group_id
-    else:
-        number=msg.private_id
-    if (in_group(number) or in_private(number)) and is_match(r'^音乐 (.*)$',msg.content):
-        music_name=is_match(r'^音乐 (.*)$',msg.content).group(1)
+    (account,account_type)=utils.get_account_and_type(msg)
+    if utils.in_plugins(account,account_type,plugin_name) and utils.is_match(r'^音乐 (.*)$',msg.content):
+        music_name=utils.is_match(r'^音乐 (.*)$',msg.content).group(1)
         url="http://music.163.com/api/search/get/"
         p={
             "s":music_name,

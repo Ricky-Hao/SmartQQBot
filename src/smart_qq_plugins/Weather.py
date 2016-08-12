@@ -1,12 +1,10 @@
 # coding:utf-8
 import requests
 import json
-import re
-import sqlite3
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import on_all_message
 import smart_qq_bot.sqlite as sql
-
+import smart_qq_bot.utils as utils
 # Code by:      john123951  /   john123951@126.com
 # Modify by:    Yinzo       /   yinz995-1@yahoo.com
 
@@ -16,41 +14,21 @@ plugin_name='Weather'
 ######
 
 ######
-def update_id(name):
-    global group_id
-    global private_id
-    
-    private_id=sql.get_private_id(name)
-    group_id=sql.get_group_id(name)
 
-def in_group(gc):
-    global group_id
-    return gc in group_id
-
-def in_private(qq):
-    global private_id
-    return qq in private_id
-
-def is_match(p,s):
-    return re.match(p,s)
 ######
 
 ######
-update_id(plugin_name)
+
 ######
 
 
 
 @on_all_message(name=plugin_name)
 def weather(msg, bot):
-    update_id(plugin_name)
-    if msg.type=="group_message":
-        number=msg.group_id
-    else:
-        number=msg.private_id
-    if (in_group(number) or in_private(number)) and is_match(r'^天气 (.*)$',msg.content):
-        city=is_match(r'^天气 (.*)$',msg.content).group(1)
-        logger.info("[Weather] "+number+" "+city)
+    (account,account_type)=utils.get_account_and_type(msg)
+    if utils.in_plugins(account,account_type,plugin_name) and utils.is_match(r'^天气 (.*)$',msg.content):
+        city=utils.is_match(r'^天气 (.*)$',msg.content).group(1)
+        logger.info("[Weather] "+account_type+': '+account+" "+city)
 
         try:
             city_name = city
