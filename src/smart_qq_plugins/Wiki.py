@@ -22,7 +22,10 @@ def Wiki(msg,bot):
             if tmp.status_code==200:
                 try:
                     result=json.loads(tmp.text)[2][0]
-                    bot.reply_msg(msg,result)
+                    if result!='':
+                        bot.reply_msg(msg,result)
+                    else:
+                        bot.reply_msg(msg,'未找到相关信息哦~')
                 except Exception as e:
                     logger.debug(e)
             else:
