@@ -17,6 +17,7 @@ def Wiki(msg,bot):
     if utils.in_plugins(account,account_type,plugins_name):
         if utils.is_match('^(百科|Wiki) (.*)$',msg.content):
             params['search']=utils.is_match('^(百科|Wiki) (.*)$',msg.content).group(1)
+            logger.info('[Wiki] Searching: '+params['search']+'for '+account_type+': '+account)
             tmp=requests.get(url,params=params,proxies=proxies)
             if tmp.status_code==200:
                 try:
