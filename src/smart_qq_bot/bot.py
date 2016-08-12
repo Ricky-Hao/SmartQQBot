@@ -657,7 +657,7 @@ class QQBot(object):
 
     def get_discu_info(self,did):
         if not sql.detch_one('select discu_name from discu_data where did="{0}";'.format(did)):
-            url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100))
+            url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100)))
             tmp=self.client.get(url)
             tmp=json.loads(tmp)
             discu_name=tmp['result']['info']['discu_name']
