@@ -21,11 +21,12 @@ def Wiki(msg,bot):
             if tmp.status_code==200:
                 s=""
                 try:
-                    for i in tmp[2]:
+                    result=json.loads(tmp.text)[2]
+                    for i in result:
                         s+=i+'\n'
                     bot.reply_msg(msg,s)
                 except:
-                    psss
+                    pass
             else:
                 bot.reply_msg(msg,"网络出错了哦~")
                 
