@@ -18,6 +18,7 @@ from smart_qq_bot.messages import (
     GroupMsg,
     PrivateMsg,
     SessMsg,
+    DiscuMsg,
 )
 
 QR_CODE_STATUS = {
@@ -615,6 +616,9 @@ class QQBot(object):
         else:
             tmp[0]
     '''
+    #暂时废弃
+    def discu_update(self,msg):
+        sql.execute('update discu_data set did="{0}" where discu_name="{1}";'.format(did,discu_name))
 
     def group_database(self):
         sql.execute('delete from group_data;')
@@ -651,6 +655,14 @@ class QQBot(object):
         else:
             return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(msg.from_uin))[0]
 
+    def get_discu_info(self,did):
+        if not sql.detch_one('select discu_name from discu_data where did="{0}";'.format(did)):
+            url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100))
+            tmp=self.client.get(url)
+            tmp=json.loads(tmp)
+            discu_name=tmp['result']['info']['discu_name']
+            sql.execute('update discu_data set did="{0}" where discu_name="{1}";'.format(did,discu_name))
+
     def get_group_info(self, group_code=None, group_id=None):
         """
         通过group_code或者group_id(群号)获取对应群信息
@@ -663,7 +675,7 @@ class QQBot(object):
             'group_code':    87654321
         }
         """
-        logger.debug(self.group_id_list)
+        #logger.debug(self.group_id_list)
         if group_code or group_id:
             if group_code:
                 assert isinstance(group_code, str), "group_code类型错误, 应该为str"
@@ -802,7 +814,37 @@ class QQBot(object):
                 logger.warning("RUNTIMELOG send_qun_msg: Response Error over 5 times.Exit.reply content:" + str(reply_content))
                 return False
 
-
+    #发送小组消息
+    def send_discu_msg(self,reply_content,did,msg_id,fail_times=0):
+        fix_content = str(reply_content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t"))
+        rsp = ""
+        try:
+            logger.info("Starting send discu message: %s" % reply_content)
+            req_url = "http://d1.web2.qq.com/channel/send_discu_msg2"
+            data = (
+                ('r',
+                 '{{"did":{0}, "face":564,"content":"[\\"{4}\\",[\\"font\\",{{\\"name\\":\\"Arial\\",\\"size\\":\\"10\\",\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}}]]","clientid":{1},"msg_id":{2},"psessionid":"{3}"}}'.format(
+                         did, self.client_id, msg_id, self.psessionid, fix_content)),
+                ('clientid', self.client_id),
+                ('psessionid', self.psessionid)
+            )
+            rsp = self.client.post(req_url, data, SMART_QQ_REFER)
+            rsp_json = json.loads(rsp)
+            if 'retcode' in rsp_json and rsp_json['retcode'] not in MESSAGE_SENT:
+                raise ValueError("RUNTIMELOG reply group chat error" + str(rsp_json['retcode']))
+            logger.info("RUNTIMELOG send_discu_msg: Reply '{}' successfully.".format(reply_content))
+            logger.debug("RESPONSE send_discu_msg: Reply response: " + str(rsp))
+            return rsp_json
+        except:
+            logger.warning("RUNTIMELOG send_qun_msg fail")
+            if fail_times < 5:
+                logger.warning("RUNTIMELOG send_discu_msg: Response Error.Wait for 2s and Retrying." + str(fail_times))
+                logger.debug("RESPONSE send_discu_msg rsp:" + str(rsp))
+                time.sleep(2)
+                self.send_discu_msg(reply_content, did, msg_id, fail_times + 1)
+            else:
+                logger.warning("RUNTIMELOG send_discu_msg: Response Error over 5 times.Exit.reply content:" + str(reply_content))
+                return False
     # 发送私密消息
     def send_friend_msg(self, reply_content, uin, msg_id, fail_times=0):
         fix_content = str(reply_content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t"))
@@ -847,10 +889,14 @@ class QQBot(object):
             if return_function:
                 return functools.partial(self.send_group_msg, group_code=msg.group_code, msg_id=msg_id)
             return self.send_group_msg(reply_content=reply_content, group_code=msg.group_code, msg_id=msg_id)
-        if isinstance(msg, PrivateMsg):
+        elif isinstance(msg, PrivateMsg):
             if return_function:
                 return functools.partial(self.send_friend_msg, uin=msg.from_uin, msg_id=msg_id)
             return self.send_friend_msg(reply_content=reply_content, uin=msg.from_uin, msg_id=msg_id)
-        if isinstance(msg, SessMsg):
+        elif isinstance(msg, SessMsg):
             # 官方已废弃临时消息接口, 等官方重启后再完善此函数
             pass
+        elif isinstance(msg,DiscuMsg):
+            if return_function:
+                return functools.partial(self.send_discu_msg,did=msg.did,msg_id=msg_id)
+            return self.send_discu_msg(reply_content=reply_content,did=msg.did,msg_id=msg_id)
