@@ -98,7 +98,7 @@ class DiscuMsg(QMessage):
         super(DiscuMsg,self).__init__(msg_dict)
         self.send_uin = msg_dict['value']['send_uin']
         self.from_uin = msg_dict['value']['from_uin']
-        self.did=msg_dict['value']['did']
+        self.did=str(msg_dict['value']['did'])
 
 MSG_TYPE_MAP = {
     GROUP_MSG: GroupMsg,
