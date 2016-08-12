@@ -105,7 +105,7 @@ MSG_TYPE_MAP = {
     KICK_MSG: QMessage,
     SESS_MSG: SessMsg,
     PRIVATE_MSG: PrivateMsg,
-    DISCU_MSG:
+    DISCU_MSG:DiscuMsg
 }
 
 
