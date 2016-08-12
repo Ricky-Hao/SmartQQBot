@@ -13,7 +13,7 @@ QQBot提供的二次开发接口主要是针对插件，基础框架的贡献请
 
 #### 开发内置插件
 
-1. 创建一个文件 `sample_plugin.py`，放置到smart_qq_plugins文件夹内
+1. 创建一个文件 `sample_plugin.py`，放置到smart\_qq\_plugins文件夹内
 
 ```python
 # coding: utf-8
@@ -22,26 +22,29 @@ from random import randint
 from smart_qq_bot.messages import GroupMsg, PrivateMsg
 from smart_qq_bot.signals import on_all_message, on_bot_inited
 from smart_qq_bot.logger import logger
+import smart_qq_bot.utils as utils
 
+plugin_name="SamplePlugin"
 
 @on_bot_inited("PluginManager")
 def manager_init(bot):
     logger.info("Plugin Manager is available now:)")
 
-@on_all_message(name="SamplePlugin")
+@on_all_message(name=plugin_name)
 def sample_plugin(msg, bot):
     """
     :type bot: smart_qq_bot.bot.QQBot
     :type msg: smart_qq_bot.messages.GroupMsg
     """
-    msg_id = randint(1, 10000)
-    
-    # 发送一条群消息
-    if isinstance(msg, GroupMsg):
-        bot.send_group_msg("msg", msg.from_uin, msg_id)
-    # 发送一条私聊消息
-    elif isinstance(msg, PrivateMsg):
-        bot.send_friend_msg("msg", msg.from_uin, msg_id)
+    (account,account_type)=utils.get_account_and_type(msg)
+    if utils.in_plugins(account,account_type,plugin_name):
+        # 发送一条群消息
+        msg_id = randint(1, 10000)
+        if isinstance(msg, GroupMsg):
+            bot.send_group_msg("msg", msg.from_uin, msg_id)
+        # 发送一条私聊消息
+        elif isinstance(msg, PrivateMsg):
+            bot.send_friend_msg("msg", msg.from_uin, msg_id)
 ```
 
 2. 在plugin.json中，`plugin_on`字段中，填入新插件名字，文件可能是这样
@@ -49,8 +52,8 @@ def sample_plugin(msg, bot):
 {
   "plugin_packages": [],
   "plugin_on": [
-      "manager",
-      "satoru",
+      "Activate",
+      "Nickname",
       "sample_plugin"
   ]
 }
@@ -70,8 +73,8 @@ def sample_plugin(msg, bot):
 {
   "plugin_packages": ['your_plugin_package_name'],
   "plugin_on": [
-      "manager",
-      "satoru"
+      "Activate",
+      "Nickname"
   ]
 }
 ```

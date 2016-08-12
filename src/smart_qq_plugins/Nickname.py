@@ -159,10 +159,12 @@ def Nickname(msg, bot):
             #写入数据库
             #先将数据库内的数据解析成list
             tmp=json.loads(sql.fetch_one('select {0} from Nickname where account="{1}" and account_type="{2}";'.format(opt,account,account_type))[0])
-            #将content加入list
-            tmp.remove(content)
-            #将list转换为json写入数据库
-            sql.execute("update Nickname set '{0}' = '{1}' where account = '{2}' and account_type='{3}';".format(opt,json.dumps(tmp),account,account_type))
+            if content in tmp:
+                tmp.remove(content)
+                #将list转换为json写入数据库
+                sql.execute("update Nickname set '{0}' = '{1}' where account = '{2}' and account_type='{3}';".format(opt,json.dumps(tmp),account,account_type))
+            else:
+                bot.reply_msg(msg,'没有这个内容哦！')
 
         elif utils.is_match('^!'+nickname+' rename (.*)$',msg.content):
             rename=utils.is_match('^!'+nickname+' rename (.*)$',msg.content).group(1)

@@ -1,7 +1,6 @@
 # coding:utf-8
 import requests
 import json
-import re
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import on_all_message
 import smart_qq_bot.sqlite as sql
