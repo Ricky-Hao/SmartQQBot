@@ -50,7 +50,7 @@ SmartQQBot
 ## 插件配置
 ### 如何载入插件
 
-1. 将插件放置到smart\_qq_\plugins目录下
+1. 将插件放置到smart\_qq_plugins目录下
 2. 复制plugin.json.example为plugin.json
 3. 修改启用的插件列表plugin_on
 

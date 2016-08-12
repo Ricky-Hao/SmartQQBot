@@ -13,7 +13,7 @@ QQBot提供的二次开发接口主要是针对插件，基础框架的贡献请
 
 #### 开发内置插件
 
-1. 创建一个文件 `sample_plugin.py`，放置到smart\_qq\_plugins文件夹内
+1. 创建一个文件 `sample_plugin.py`，放置到smart\_qq_plugins文件夹内
 
 ```python
 # coding: utf-8
