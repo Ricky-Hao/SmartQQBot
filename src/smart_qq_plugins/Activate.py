@@ -63,16 +63,22 @@ def do_Activate(msg,bot):
         #启用插件
         elif utils.is_match(r'^!启用 (.*)$',msg.content):
             open_plugin_name=utils.is_match(r'^!启用 (.*)$',msg.content).group(1)
-            l=sql.fetch_all('select plugin_name from plugins where account="{0}" and account_type="{1}";'.format(account,account_type))
-            tmp=[]
+            tmp=sql.fetch_all('select plugin_name from plugins where account="{0}" and account_type="{1}";'.format(account,account_type))
+            open_list=[]
             for i in l:
-                tmp.append(i[0])
-            if open_plugin_name not in tmp:
+                open_list.append(i[0])
+
+            with open('./config/plugin.json','r') as f:
+                plugin_list=json.load(f).get('plugin_on')
+
+            if open_plugin_name not in open_list and open_plugin_name in plugin_list:
                 sql.execute("insert into plugins(account,plugin_name,account_type) values ('{0}','{1}','{2}');".format(account,open_plugin_name,account_type))
                 logger.info('[Activate] '+account_type+': '+account+' activate '+open_plugin_name)
                 bot.reply_msg(msg,"开启{0}插件成功~".format(open_plugin_name))
-            else:
+            elif open_plugin_name in open_list:
                 bot.reply_msg(msg,open_plugin_name+'已经在使用了哦~')
+            else:
+                bot.reply_msg(msg,'别捣乱，哼哼~')
 
         #列出插件列表
         elif utils.is_match(r'^!已启用插件$',msg.content):
