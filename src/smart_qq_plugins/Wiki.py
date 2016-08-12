@@ -24,7 +24,6 @@ def Wiki(msg,bot):
                     for i in tmp[2]:
                         s+=i+'\n'
                     bot.reply_msg(msg,s)
-                bot.
                 except:
                     psss
             else:
