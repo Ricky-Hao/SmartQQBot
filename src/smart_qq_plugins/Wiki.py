@@ -22,8 +22,8 @@ def Wiki(msg,bot):
             if tmp.status_code==200:
                 try:
                     result=json.loads(tmp.text)[2]
-                    for i in result:
-                        bot.reply_msg(msg,i)
+                    for i in range(0,3):
+                        bot.reply_msg(msg,result[i])
                 except Exception as e:
                     logger.debug(e)
             else:
