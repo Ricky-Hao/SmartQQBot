@@ -21,9 +21,8 @@ def Wiki(msg,bot):
             tmp=requests.get(url,params=params,proxies=proxies)
             if tmp.status_code==200:
                 try:
-                    result=json.loads(tmp.text)[2]
-                    for i in range(0,3):
-                        bot.reply_msg(msg,result[i])
+                    result=json.loads(tmp.text)[2][0]
+                    bot.reply_msg(msg,result)
                 except Exception as e:
                     logger.debug(e)
             else:
