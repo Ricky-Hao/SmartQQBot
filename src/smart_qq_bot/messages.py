@@ -5,6 +5,7 @@ GROUP_MSG = "group_message"
 SESS_MSG = "sess_message"
 INPUT_NOTIFY_MSG = "input_notify"
 KICK_MSG = "kick_message"
+DISCU_MSG="discu_msg"
 
 # Msg type in message content
 OFF_PIC_PART = "offpic"
