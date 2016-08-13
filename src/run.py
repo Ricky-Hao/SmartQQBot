@@ -24,6 +24,7 @@ if not os.path.exists(db):
 else:
     sql.connect(db)
 
+
 try:
     run()
 except KeyboardInterrupt:

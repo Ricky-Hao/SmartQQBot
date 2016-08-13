@@ -2,6 +2,7 @@ import requests
 import time
 import os
 import http.cookiejar
+from smart_qq_bot.logger import logger
 
 from smart_qq_bot.config import (
     SMART_QQ_REFER,
@@ -47,8 +48,10 @@ class HttpClient(object):
             req = requests.get(url,headers={"Referer":refer or SMART_QQ_REFER})
             tmp_req = self._opener.get(url,headers={"Referer":refer or SMART_QQ_REFER})
             self._cookie.save(COOKIE_FILE, ignore_discard=True,ignore_expires=True)
+            #logger.debug(tmp_req.text)
             return tmp_req.text
         except requests.HTTPError as e:
+            logger.debug(e)
             return e
 
     def post(self, url, data, refer=None):

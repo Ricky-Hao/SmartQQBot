@@ -17,7 +17,7 @@ with open('./config/plugin.json','r') as f:
 
 def update_help_data():
     for p in plugin_list:
-        if not sql.fetch_one('select help from Help where plugin_name="{0}";'.format(p)):
+        if p!=plugin_name and not sql.fetch_one('select help from Help where plugin_name="{0}";'.format(p)):
             try:
                 tmp=(__import__('smart_qq_plugins.'+p,fromlist=['HELP']))
                 logger.debug(tmp.HELP)

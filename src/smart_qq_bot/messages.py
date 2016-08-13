@@ -99,6 +99,7 @@ class DiscuMsg(QMessage):
         self.send_uin = msg_dict['value']['send_uin']
         self.from_uin = msg_dict['value']['from_uin']
         self.did=str(msg_dict['value']['did'])
+        self.fake_did=msg_dict['fake_did']
 
 MSG_TYPE_MAP = {
     GROUP_MSG: GroupMsg,
@@ -117,5 +118,4 @@ def mk_msg(msg_dict,bot):
         msg_dict['private_id']=str(bot.uin_to_account(msg_dict['value']['from_uin']))
     elif msg_dict['poll_type']==DISCU_MSG:
         msg_dict['fake_did']=bot.get_discu_fake_did(str(msg_dict['value']['did']))
-        logger.debug(msg_dict)
     return MSG_TYPE_MAP[msg_dict['poll_type']](msg_dict)
