@@ -54,9 +54,7 @@ def Tuling_robot(msg, bot):
             reply=response_json.get('text')
             if utils.is_match('^亲，已帮您找到(.*)$',reply):
                 opt=utils.is_match('^亲，已帮您找到(.*)$',reply)[1]
-                if opt=="图片":
-                    
-                elif opt=="航班信息":
+                if opt=="航班信息":
                     bot.reply_msg(msg,response_json['url'])
                 elif opt=="列车信息":
                     bot.reply_msg(msg,response_json['url'])
