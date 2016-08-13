@@ -65,7 +65,7 @@ def Tuling_robot(msg, bot):
                     s=""
                     for c in content_list:
                         s+=c['name']+'\n'+c['detailurl']+'\n'
-            elif utils.is_match('^已帮您找到相关新闻信息$',reply):
+            elif utils.is_match('^已帮您找到相关新闻$',reply):
                 content_list=response_json['list']
                 s=''
                 for c in content_list:
