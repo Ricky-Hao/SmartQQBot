@@ -51,11 +51,11 @@ def Tuling_robot(msg, bot):
             }
             response = requests.get(url,headers=headers,params=querystring)
             response_json = response.json()
-            reply=response_json.get('text').strip("亲爱的，")
-            if utils.is_match('^已帮你找到(.*)$',reply):
-                opt=utils.is_match('^已帮你找到(.*)$',reply)[1]
+            reply=response_json.get('text')
+            if utils.is_match('^亲，已帮您找到(.*)$',reply):
+                opt=utils.is_match('^亲，已帮您找到(.*)$',reply)[1]
                 if opt=="图片":
-                    bot.reply_msg(msg,response_json['url'])
+                    
                 elif opt=="航班信息":
                     bot.reply_msg(msg,response_json['url'])
                 elif opt=="列车信息":
@@ -65,10 +65,14 @@ def Tuling_robot(msg, bot):
                     s=""
                     for c in content_list:
                         s+=c['name']+'\n'+c['detailurl']+'\n'
-            elif utils.is_match('^已帮您找到相关新闻$',reply):
-                content_list=response_json['list']
-                s=''
-                for c in content_list:
-                    s+=c['article']+'\n'+c['detailurl']+'\n'
+                    bot.reply_msg(msg,s)
+                elif opt=="相关新闻":
+                    content_list=response_json['list']
+                    s=''
+                    for c in content_list:
+                        s+=c['article']+'\n'+c['detailurl']+'\n'
+                    bot.reply_msg(msg,s)
+            elif utils.is_match('^亲，已帮你找到图片$',reply):
+                bot.reply_msg(msg,response_json['url'])
             else:
-                bot.reply_msg(msg, reply)
+                bot.reply_msg(msg, reply.strip("亲爱的，"))
