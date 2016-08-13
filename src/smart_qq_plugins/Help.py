@@ -12,10 +12,10 @@ HELP={
     2:'帮助 插件名: 获取相应插件的Help文件',
     3:'Help 插件名: 获取相应插件的Help文件'
 }
+with open('./config/plugin.json','r') as f:
+    plugin_list=json.load(f).get('plugin_on')
 
 def update_help_data():
-    with open("./config/plugin.json",'r') as f:
-        plugin_list=json.load(f).get('plugin_on')
     for p in plugin_list:
         if not sql.fetch_one('select help from Help where plugin_name="{0}";'.format(p)):
             try:
@@ -41,11 +41,12 @@ def Help(msg,bot):
             s=""
             for i in HELP.keys():
                 s+=HELP[i]+'\n'
+            s+='目前可用的插件有：'
+            for i in plugin_list:
+                s+=i+'，'
             bot.reply_msg(msg,s)
         elif utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
             help_plugin_name=utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content).group(2)
-            with open('./config/plugin.json','r') as f:
-                plugin_list=json.load(f).get('plugin_on')
             if help_plugin_name not in plugin_list:
                 bot.reply_msg(msg,'没有这个插件啦~')
             else:
