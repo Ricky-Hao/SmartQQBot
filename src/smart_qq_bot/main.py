@@ -53,8 +53,9 @@ def main_loop(no_gui=False, new_user=False, debug=False):
                 )
         except ServerResponseEmpty:
             continue
-        except (socket.timeout, IOError):
+        except (socket.timeout, IOError) as e:
             logger.warning("Message pooling timeout, retrying...")
+            logger.warning(e)
         except Exception:
             logger.exception("Exception occurs when checking msg.")
 
