@@ -115,4 +115,6 @@ def mk_msg(msg_dict,bot):
         msg_dict['group_id']=bot.uin_to_group_id(msg_dict['value']['from_uin'])
     elif msg_dict['poll_type']==PRIVATE_MSG:
         msg_dict['private_id']=str(bot.uin_to_account(msg_dict['value']['from_uin']))
+    elif msg_dict['poll_type']==DISCU_MSG:
+        msg_dict['fake_did']=bot.get_discu_fake_did(str(msg_dict['value']['did']))
     return MSG_TYPE_MAP[msg_dict['poll_type']](msg_dict)

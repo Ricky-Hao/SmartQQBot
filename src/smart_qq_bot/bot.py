@@ -655,13 +655,18 @@ class QQBot(object):
         else:
             return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(msg.from_uin))[0]
 
-    def get_discu_info(self,did):
-        if not sql.detch_one('select discu_name from discu_data where did="{0}";'.format(did)):
-            url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100)))
-            tmp=self.client.get(url)
-            tmp=json.loads(tmp)
-            discu_name=tmp['result']['info']['discu_name']
-            sql.execute('update discu_data set did="{0}" where discu_name="{1}";'.format(did,discu_name))
+    def get_discu_fake_did(self,did):
+        url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100)))
+        tmp=self.client.get(url)
+        tmp=json.loads(tmp)
+        discu_name=tmp['result']['info']['discu_name']
+        if sql.detch_one('select fake_did from discu_data where discu_name="{0}";'.format(discu_name)):
+            return sql.fetch_one('select fake_did from discu_data where discu_name="{0}";'.format(discu_name))[0]
+        else:
+            sql.execute('insert into discu_data(discu_name,fake_did) values("{0}","{1}");'.format(discu_name,"fake"+did))
+            return "fake"+did
+
+
 
     def get_group_info(self, group_code=None, group_id=None):
         """

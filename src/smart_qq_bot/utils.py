@@ -17,7 +17,10 @@ def get_account_and_type(msg):
     elif msg.type=="message":
         account_type='private'
         account=msg.private_id
-    else:
+    elif:
         account_type='discu'
-        account=msg.did
+        account=msg.fake_did
+    else:
+        account="0"
+        account_type="None"
     return (account,account_type)

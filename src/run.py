@@ -15,7 +15,7 @@ db=r"./config/data.db"
 if not os.path.exists(db):
     sql.connect(db)
     sql.execute('create table group_data(id integer primary key autoincrement unique not null,group_id varchar(20),group_name varchar(100),group_code varvhar(20));')
-    #sql.execute('create table private_data(id integer primary key autoincrement unique not null,private_id varchar(20),private_code varvhar(20));')
+    sql.execute('create table discu_data(id integer primary key autoincrement unique not null,fake_did varchar(20),discu_name varvhar(100));')
     sql.execute("create table plugins(id integer primary key autoincrement unique not null,account varchar(20),plugin_name varchar(100),account_type varchar(20));")
     with open("./config/plugin.json","r") as f:
          plugins=json.load(f).get('plugin_on')
