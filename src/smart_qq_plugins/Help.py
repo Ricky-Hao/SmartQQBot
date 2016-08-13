@@ -10,7 +10,8 @@ import sys
 plugin_name="Help"
 HELP={
     'Help':'帮助列表插件',
-    '帮助 插件名':'获取相应插件的Help文件'
+    '帮助 插件名':'获取相应插件的Help文件',
+    'Help 插件名':'获取相应插件的Help文件'
 }
 
 def update_help_data():
