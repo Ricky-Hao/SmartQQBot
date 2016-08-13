@@ -7,6 +7,11 @@ import smart_qq_bot.sqlite as sql
 import smart_qq_bot.utils as utils
 
 plugins_name="Wiki"
+HELP={
+    'Wiki':'维基百科插件',
+    'Wiki 关键词':'自动检索维基百科对应关键词的简介',
+    '百科 关键词':'自动检索维基百科对应关键词的简介'
+}
 proxies={"https":"socks5://127.0.0.1:1080"}
 params={"action":"opensearch",'search':'','namespace':'0'}
 url="https://zh.wikipedia.org/w/api.php"

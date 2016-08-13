@@ -10,6 +10,12 @@ import smart_qq_bot.utils as utils
 with open('./config/API_Key.json','r') as f:
     API_KEY=json.load(f)
 plugin_name='Bing'
+HELP={
+    'Bing':'必应翻译插件',
+    '翻译 内容':'将任意内容自动翻译为中文',
+    '翻译 日 内容':'将任意内容翻译为日语',
+    '翻译 英 内容':'将任意内容翻译为英语'
+}
 ######
 
 ######

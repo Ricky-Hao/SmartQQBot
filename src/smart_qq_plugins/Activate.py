@@ -7,6 +7,15 @@ import json
 
 ########################
 plugin_name="Activate"
+HELP={
+    'Activate':'控制插件',
+    '!召唤 昵称':'将机器人命名为“昵称”，并启用',
+    '!回去吧 昵称':'将机器人关闭（需要事先起用）',
+    '!已启用插件':'获得已启用插件列表',
+    '!可用插件':'获得可用插件列表',
+    '!启用 插件名称':'开启插件',
+    '!关闭 插件名称':'关闭插件'
+}
 ########################
 
 #######################
@@ -65,7 +74,7 @@ def do_Activate(msg,bot):
             open_plugin_name=utils.is_match(r'^!启用 (.*)$',msg.content).group(1)
             tmp=sql.fetch_all('select plugin_name from plugins where account="{0}" and account_type="{1}";'.format(account,account_type))
             open_list=[]
-            for i in l:
+            for i in open_list:
                 open_list.append(i[0])
 
             with open('./config/plugin.json','r') as f:

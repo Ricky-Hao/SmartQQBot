@@ -7,6 +7,10 @@ import smart_qq_bot.utils as utils
 
 ######
 plugin_name="NetEaseMusic"
+HELP={
+    'NetEaseMusic':'网易云音乐在线查询插件',
+    '音乐 乐曲名':'自动搜索该乐曲名音乐，并显示前三条'
+}
 ######
 
 ######

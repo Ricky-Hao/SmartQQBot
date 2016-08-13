@@ -19,6 +19,10 @@ headers = {
     'apikey': API_KEY.get('Baidu')
 }
 plugin_name='Tuling_bot'
+HELP={
+    'Tuling_bot':'图灵机器人插件',
+    '使用方法':'机器人昵称+标点+对话内容可以触发对话'
+}
 ######
 
 ######
