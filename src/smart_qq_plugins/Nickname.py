@@ -85,14 +85,14 @@ REPLY_CONTENT=[
     "啊哈"
 ]
 HELP={
-    'Nickname':'昵称插件',
-    '!昵称 rename 新昵称':'为机器人改名',
-    '!昵称 list content':'列出机器人自动回复的内容列表',
-    '!昵称 list suffix':'列出机器人自动回复的后缀列表',
-    '!昵称 add content xxx':'将xxx添加入机器人自动回复的内容列表',
-    '!昵称 add suffix xxx':'将xxx添加入机器人自动回复的后缀列表',
-    '!昵称 remove content xxx':'将xxx从机器人自动回复的内容列表中移除',
-    '!昵称 remove suffix xxx':'将xxx从机器人自动回复的后缀列表中移除'
+    1,'Nickname: 昵称插件',
+    2,'!昵称 rename 新昵称: 为机器人改名',
+    3,'!昵称 list content: 列出机器人自动回复的内容列表',
+    4,'!昵称 list suffix: 列出机器人自动回复的后缀列表',
+    5,'!昵称 add content xxx: 将xxx添加入机器人自动回复的内容列表',
+    6,'!昵称 add suffix xxx: 将xxx添加入机器人自动回复的后缀列表',
+    7,'!昵称 remove content xxx: 将xxx从机器人自动回复的内容列表中移除',
+    8,'!昵称 remove suffix xxx: 将xxx从机器人自动回复的后缀列表中移除'
 }
 
 #########内部函数#################

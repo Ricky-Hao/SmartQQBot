@@ -2,16 +2,15 @@ import smart_qq_bot.sqlite as sql
 import smart_qq_bot.utils as utils
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import on_all_message,on_bot_inited
-from collections import OrderedDict
 import json
 import os
 import sys
 
 plugin_name="Help"
 HELP={
-    'Help':'帮助列表插件',
-    '帮助 插件名':'获取相应插件的Help文件',
-    'Help 插件名':'获取相应插件的Help文件'
+    1,'Help: 帮助列表插件',
+    2,'帮助 插件名: 获取相应插件的Help文件',
+    3,'Help 插件名: 获取相应插件的Help文件'
 }
 
 def update_help_data():
@@ -21,7 +20,7 @@ def update_help_data():
         if not sql.fetch_one('select help from Help where plugin_name="{0}";'.format(p)):
             try:
                 tmp=(__import__('smart_qq_plugins.'+p,fromlist=['HELP']))
-                logger.debug(tmp)
+                logger.debug(tmp.HELP)
                 sql.execute("insert into Help(plugin_name,help) values('{0}','{1}');".format(p,json.dumps(tmp.HELP))) 
             except Exception as e:
                 logger.debug(e)
@@ -51,7 +50,7 @@ def Help(msg,bot):
                 bot.reply_msg(msg,'没有这个插件啦~')
             else:
                 if sql.fetch_one('select * from Help where plugin_name="{0}";'.format(help_plugin_name)):
-                    help_content=json.loads(sql.fetch_one('select help from Help where plugin_name="{0}";'.format(help_plugin_name))[0],object_pairs_hook=OrderedDict)
+                    help_content=json.loads(sql.fetch_one('select help from Help where plugin_name="{0}";'.format(help_plugin_name))[0])
                     s=""
                     for k in help_content.keys():
                         s+=k+'  '+help_content[k]+'\n'
