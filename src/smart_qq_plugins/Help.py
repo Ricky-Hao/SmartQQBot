@@ -53,7 +53,7 @@ def Help(msg,bot):
                     help_content=json.loads(sql.fetch_one('select help from Help where plugin_name="{0}";'.format(help_plugin_name))[0])
                     s=""
                     for k in range(1,len(help_content)+1):
-                        s+=help_content[k]+'\n'
+                        s+=help_content[str(k)]+'\n'
                     bot.reply_msg(msg,s)
                 else:
                     bot.reply_msg(msg,'这个插件还暂时没有帮助文件哦！')
