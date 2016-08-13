@@ -12,8 +12,8 @@ import smart_qq_bot.utils as utils
 KEY = '31662bc776555612e3639dbca1ad1fd5'
 plugin_name='Weather'
 HELP={
-    1,'Weather: 天气查询插件',
-    2,'天气 城市: 查询某城市天气，暂只支持国内城市'
+    1:'Weather: 天气查询插件',
+    2:'天气 城市: 查询某城市天气，暂只支持国内城市'
 }
 ######
 
