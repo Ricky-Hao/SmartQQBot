@@ -60,7 +60,7 @@ def Tuling_robot(msg, bot):
                     bot.reply_msg(msg,response_json['url'])
                 elif opt=="菜谱信息":
                     content_list=random.choice(response_json['list'])
-                    bot.reply_msg(msg,content_list['name']+'\n'+content_list['detailurl'])
+                    bot.reply_msg(msg,content_list['name']+'\n'+content_list['info']+'\n'+content_list['detailurl'])
 
                 elif opt=="相关新闻":
                     content_list=random.choice(response_json['list'])
