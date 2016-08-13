@@ -656,10 +656,12 @@ class QQBot(object):
             return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(msg.from_uin))[0]
 
     def get_discu_fake_did(self,did):
+        logger.debug('[Get_discu_fake_did] '+did)
         url="http://di.web2.qq.com/channel/get_discu_info?did={0}&vfwebqq={1}&clientid={2}&psessionid={3}&t={4}".format(did,self.vfwebqq,self.client_id,self.psessionid,str(int(time.time() * 100)))
         tmp=self.client.get(url)
         tmp=json.loads(tmp)
         discu_name=tmp['result']['info']['discu_name']
+        logger.debug('[discu_name]'+discu_name)
         if sql.detch_one('select fake_did from discu_data where discu_name="{0}";'.format(discu_name)):
             return sql.fetch_one('select fake_did from discu_data where discu_name="{0}";'.format(discu_name))[0]
         else:
