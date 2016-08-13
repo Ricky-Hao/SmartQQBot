@@ -38,7 +38,12 @@ update_help_data()
 def Help(msg,bot):
     (account,account_type)=utils.get_account_and_type(msg)
     if utils.in_plugins(account,account_type,plugin_name):
-        if utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
+        if utils.is_match(r'^(帮助|Help|help)',msg.content):
+            s=""
+            for i in HELP:
+                s+=i+'\n'
+            bot.reply_msg(msg,s)
+        elif utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
             help_plugin_name=utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content).group(2)
             with open('./config/plugin.json','r') as f:
                 plugin_list=json.load(f).get('plugin_on')
