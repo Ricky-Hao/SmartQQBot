@@ -47,8 +47,28 @@ def Tuling_robot(msg, bot):
             querystring = {
                 "key": API_KEY.get('Tuling'),
                 "info": utils.is_match('^'+nickname+'\W(.+)',msg.content).group(1),
-                "userid": base64.b64encode(nickname.encode())
+                "userid": account
             }
             response = requests.get(url,headers=headers,params=querystring)
             response_json = response.json()
-            bot.reply_msg(msg, response_json.get('text').strip("亲爱的，"))
+            reply=response_json.get('text').strip("亲爱的，")
+            if utils.is_match('^已帮你找到(.*)$',reply):
+                opt=utils.is_match('^已帮你找到(.*)$',reply)[1]
+                if opt=="图片":
+                    bot.reply_msg(msg,response_json['url'])
+                elif opt=="航班信息":
+                    bot.reply_msg(msg,response_json['url'])
+                elif opt=="列车信息":
+                    bot.reply_msg(msg,response_json['url'])
+                elif opt=="菜谱信息":
+                    content_list=response_json['list']
+                    s=""
+                    for c in content_list:
+                        s+=c['name']+'\n'+c['detailurl']+'\n'
+            elif utils.is_match('^已帮您找到相关新闻信息$',reply):
+                content_list=response_json['list']
+                s=''
+                for c in content_list:
+                    s+=c['article']+'\n'+c['detailurl']+'\n'
+            else:
+                bot.reply_msg(msg, reply)

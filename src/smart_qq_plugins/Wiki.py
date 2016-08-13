@@ -21,7 +21,7 @@ url="https://zh.wikipedia.org/w/api.php"
 def Wiki(msg,bot):
     (account,account_type)=utils.get_account_and_type(msg)
     if utils.in_plugins(account,account_type,plugins_name):
-        if utils.is_match('^(百科|Wiki) (.*)$',msg.content):
+        if utils.is_match('^(百科|Wiki|wiki) (.*)$',msg.content):
             p['srsearch']=utils.is_match('^(百科|Wiki) (.*)$',msg.content).group(2)
             tmp=requests.get(url,p,proxies=proxies)
             try:
