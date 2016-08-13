@@ -62,14 +62,14 @@ def Tuling_robot(msg, bot):
                     content_list=response_json['list']
                     s=""
                     for i in range(0,3):
-                        s+=content_list[i]['name']+'\n'+content_list[i]['detailurl']+'\n'
-                    bot.reply_msg(msg,s)
+                        bot.reply_msg(msg,content_list[i]['name']+'\n'+content_list[i]['detailurl'])
+
                 elif opt=="相关新闻":
                     content_list=response_json['list']
                     s=''
                     for i in range(0,3):
-                        s+=content_list[i]['article']+'\n'+content_list[i]['detailurl']+'\n'
-                    bot.reply_msg(msg,s)
+                        bot.reply_msg(msg,content_list[i]['article']+'\n'+content_list[i]['detailurl'])
+                        
             elif utils.is_match('^亲，已帮你找到图片$',reply):
                 bot.reply_msg(msg,response_json['url'])
             else:
