@@ -9,8 +9,8 @@ import sys
 plugin_name="Help"
 HELP={
     1:'Help: 帮助列表插件',
-    2:'帮助 插件名: 获取相应插件的Help文件',
-    3:'Help 插件名: 获取相应插件的Help文件'
+    2:'!帮助 插件名: 获取相应插件的Help文件',
+    3:'!Help 插件名: 获取相应插件的Help文件'
 }
 with open('./config/plugin.json','r') as f:
     plugin_list=json.load(f).get('plugin_on')
@@ -37,7 +37,7 @@ update_help_data()
 def Help(msg,bot):
     (account,account_type)=utils.get_account_and_type(msg)
     if utils.in_plugins(account,account_type,plugin_name):
-        if utils.is_match(r'^(帮助|Help|help)$',msg.content):
+        if utils.is_match(r'^!(帮助|Help|help)$',msg.content):
             s=""
             for i in HELP.keys():
                 s+=HELP[i]+'\n'
@@ -45,8 +45,8 @@ def Help(msg,bot):
             for i in plugin_list:
                 s+=i+'，'
             bot.reply_msg(msg,s)
-        elif utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
-            help_plugin_name=utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content).group(2)
+        elif utils.is_match(r'^!(帮助|Help|help) (.*)$',msg.content):
+            help_plugin_name=utils.is_match(r'^!(帮助|Help|help) (.*)$',msg.content).group(2)
             if help_plugin_name not in plugin_list:
                 bot.reply_msg(msg,'没有这个插件啦~')
             else:
