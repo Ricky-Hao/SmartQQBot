@@ -14,6 +14,7 @@ HELP={
 }
 proxies={"https":"socks5://127.0.0.1:1080"}
 params={"action":"opensearch",'search':'','namespace':'0'}
+p={'action':'query','list':'search','format':'json','srsearch':''}
 url="https://zh.wikipedia.org/w/api.php"
 
 @on_all_message(name=plugins_name)
@@ -21,7 +22,12 @@ def Wiki(msg,bot):
     (account,account_type)=utils.get_account_and_type(msg)
     if utils.in_plugins(account,account_type,plugins_name):
         if utils.is_match('^(百科|Wiki) (.*)$',msg.content):
-            params['search']=utils.is_match('^(百科|Wiki) (.*)$',msg.content).group(2)
+            p['srsearch']=utils.is_match('^(百科|Wiki) (.*)$',msg.content).group(2)
+            tmp=requests.get(url,p,proxies=proxies)
+            try:
+                params['search']=json.loads(tmp.text)['query']['search'][0]['title']
+            except:
+                params['search']=p['srsearch']
             logger.info('[Wiki] Searching: '+params['search']+' for '+account_type+': '+account)
             tmp=requests.get(url,params=params,proxies=proxies)
             if tmp.status_code==200:
