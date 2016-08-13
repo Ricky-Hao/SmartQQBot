@@ -40,7 +40,7 @@ def Help(msg,bot):
     if utils.in_plugins(account,account_type,plugin_name):
         if utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
             help_plugin_name=utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content).group(2)
-            with open('./plugin.json''r') as f:
+            with open('./plugin.json','r') as f:
                 plugin_list=json.load(f).get('plugin_on')
             if help_plugin_name not in plugin_list:
                 bot.reply_msg(msg,'没有这个插件啦~')
