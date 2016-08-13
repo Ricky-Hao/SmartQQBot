@@ -39,8 +39,8 @@ def Help(msg,bot):
     if utils.in_plugins(account,account_type,plugin_name):
         if utils.is_match(r'^(帮助|Help|help)$',msg.content):
             s=""
-            for i in HELP:
-                s+=i+'\n'
+            for i in HELP.keys():
+                s+=HELP[i]+'\n'
             bot.reply_msg(msg,s)
         elif utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content):
             help_plugin_name=utils.is_match(r'^(帮助|Help|help) (.*)$',msg.content).group(2)
