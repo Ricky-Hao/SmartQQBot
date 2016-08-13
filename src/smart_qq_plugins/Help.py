@@ -38,7 +38,7 @@ update_help_data()
 def Help(msg,bot):
     (account,account_type)=utils.get_account_and_type(msg)
     if utils.in_plugins(account,account_type,plugin_name):
-        if utils.is_match(r'^(帮助|Help|help)',msg.content):
+        if utils.is_match(r'^(帮助|Help|help)$',msg.content):
             s=""
             for i in HELP:
                 s+=i+'\n'
