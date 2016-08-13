@@ -52,7 +52,7 @@ def Help(msg,bot):
                 if sql.fetch_one('select * from Help where plugin_name="{0}";'.format(help_plugin_name)):
                     help_content=json.loads(sql.fetch_one('select help from Help where plugin_name="{0}";'.format(help_plugin_name))[0])
                     s=""
-                    for k in help_content.keys():
+                    for k in range(1,len(help_content)+1):
                         s+=help_content[k]+'\n'
                     bot.reply_msg(msg,s)
                 else:
