@@ -7,62 +7,6 @@ import smart_qq_bot.utils as utils
 from smart_qq_bot.logger import logger
 from smart_qq_bot.signals import on_all_message
 
-######################插件编写教程#########################
-#sql库是内置的对数据库进行操作的一个接口
-#其提供了
-#   sql.execute(s)      ：用于执行不需要返回值的sql命令。s：字符串
-#   sql.fetch_all(s)    ：用于执行需要返回全部结果的sql命令。s：字符串
-#   sql.fetch_one(s)    ：用于执行需要返回一条结果的sql命令。s：字符串
-#   sql.get_private_id(plugin_name)    ：从 plugins_private表 中提取启用了 plugin_name 插件的 QQ号 数据，
-#                                       并以列表的形式储存在private_id。返回值：private_id=['xxx','sss']
-#   sql.get_group_id(plugin_name)    ：从 plugins_group表 中提取启用了 plugin_name 插件的 群号 数据，
-#                                       并以列表的形式储存在group_id。返回值：group_id=['xxx','sss']
-#   sql.check_table(table_name)     ：用于检测表 table_name 是否已存在（即插件是否已数据库初始化）。
-#                                   返回值： True 已初始化，False 未初始化
-#==========================================================
-#logger是向控制台输出消息的对象
-#   logger.info(string)     输出Info信息
-#   logger.debug(string)    输出Debug信息，仅在Debug模式有效
-#   logger.error(string)    输出错误信息
-#==========================================================
-#signals分为三种
-#   on_all_message      所有信息都将被送往标记函数
-#   on_group_message    只有群消息将被送往标记函数
-#   on_private_message  只有私聊消息将被送往标记函数
-#如何标记函数
-#@on_all_message(name='plugin_name')
-#def marked_fun(msg,bot)
-#   其中msg为需要处理的消息，bot为机器人对象
-#==========================================================
-#msg的属性
-#   msg.content     消息的文本内容
-#   msg.from_uin    消息的发送uin，为int类型
-#
-#bot的方法
-#   bot.get_group_info(group_code=str(msg.from_uin))    获取群消息msg发送者的群信息
-#                                                       返回字典类型
-#                                                       {
-#                                                           'name':         "群名",
-#                                                           'id':            12345678,
-#                                                           'group_code':    87654321
-#                                                       }
-#   bot.uin_to_account(msg.from_uin))                   返回私聊消息msg发送者的QQ号
-#                                                       返回int型
-#===========================================================
-#插件大体可以分为四部分
-#一、常量部分
-#   定义下文需要用到的各种常量
-#二、初始化代码部分
-#   该部分代码用于判断及初始化插件数据库。
-#   初始化插件的加载。
-#   刷新数据等等。
-#三、内部函数部分
-#   定义需要用到的内部函数
-#四、调用函数部分
-#   该部分函数将会被 signals 标记，即会有消息被送往
-############################################################
-
-
 # =====唤出插件=====
 
 # 机器人连续回复相同消息时可能会出现
