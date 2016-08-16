@@ -23,12 +23,12 @@ sql库是内置的对数据库进行操作的一个接口
 
 
 #utils库
-import smart_qq_bot.utils as utils
++ import smart_qq_bot.utils as utils
 包含了以下几个函数
-+in_plugins(account,account_type,plugin_name)   :用于检测该账号是否在插件列表中
-+is_match(pattern,string)   :正则函数，返回re.match对象
-+get_account_and_type(msg)  :获得对应消息的账号与账号类型，return (account,account_type)
-+check_table(table_name)     ：用于检测表 table_name 是否已存在（即插件是否已数据库初始化）。
++ in_plugins(account,account_type,plugin_name)   :用于检测该账号是否在插件列表中
++ is_match(pattern,string)   :正则函数，返回re.match对象
++ get_account_and_type(msg)  :获得对应消息的账号与账号类型，return (account,account_type)
++ check_table(table_name)     ：用于检测表 table_name 是否已存在（即插件是否已数据库初始化）。
                              返回值： True 已初始化，False 未初始化
 
 
@@ -45,8 +45,8 @@ import smart_qq_bot.utils as utils
 +   on_private_message  只有私聊消息将被送往标记函数
 
 #如何标记函数
-+@on_all_message(name='plugin_name')
-+def marked_fun(msg,bot)
++ @on_all_message(name='plugin_name')
++ def marked_fun(msg,bot)
    其中msg为需要处理的消息，bot为机器人对象
 
 
