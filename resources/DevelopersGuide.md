@@ -99,7 +99,6 @@ HELP={
     1,"Someplugin name",
     2,"!someplugin command"
 }
-
 @on_bot_inited("PluginManager")
 def manager_init(bot):
     logger.info("Plugin Manager is available now:)")
