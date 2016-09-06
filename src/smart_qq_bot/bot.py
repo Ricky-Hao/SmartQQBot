@@ -639,7 +639,7 @@ class QQBot(object):
             else:
                 self.group_database()
         else:
-            if sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]!=None:
+            if sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))!=None:
                 return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]
             else:
                 group_database()
