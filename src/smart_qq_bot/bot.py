@@ -630,7 +630,6 @@ class QQBot(object):
     def uin_to_group_id(self,uin):
         #从msg.from_uin获取到的uin
         #得到真实群号
-        logger.debug(uin)
         if str(uin) not in self.group_code_list:
             logger.info("尝试更新群列表信息")
             self.get_group_list_with_group_code()
@@ -640,7 +639,7 @@ class QQBot(object):
             else:
                 self.group_database()
         else:
-            if sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]:
+            if sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]!=None:
                 return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]
             else:
                 group_database()
