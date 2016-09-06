@@ -569,7 +569,7 @@ class QQBot(object):
         """
         url = "http://qun.qq.com/cgi-bin/qun_mgr/get_group_list"
         data = {'bkn': self.bkn}
-        response = self.client.post(url, data=data, refer='http://qun.qq.com/member.html')
+        response = self.client.post(url, data=data, refer='http://qun.qq.com/member.html').replace('&nbsp;',' ')
         logger.debug("get_group_list response: {}".format(response))
         rsp_json = json.loads(response)
         if rsp_json['ec'] == 0:
