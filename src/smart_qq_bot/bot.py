@@ -630,6 +630,7 @@ class QQBot(object):
     def uin_to_group_id(self,uin):
         #从msg.from_uin获取到的uin
         #得到真实群号
+        logger.debug(uin)
         if str(uin) not in self.group_code_list:
             logger.info("尝试更新群列表信息")
             self.get_group_list_with_group_code()
