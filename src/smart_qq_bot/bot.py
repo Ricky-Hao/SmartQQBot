@@ -642,7 +642,7 @@ class QQBot(object):
             if sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))!=None:
                 return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]
             else:
-                group_database()
+                self.group_database()
                 return sql.fetch_one('select group_id from group_data where group_code = "{0}";'.format(uin))[0]
 
     def msg_to_group_id(self,msg):
