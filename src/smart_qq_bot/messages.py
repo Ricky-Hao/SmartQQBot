@@ -114,6 +114,7 @@ MSG_TYPE_MAP = {
 def mk_msg(msg_dict,bot):
     if msg_dict['poll_type'] == GROUP_MSG:
         msg_dict['group_id']=bot.uin_to_group_id(msg_dict['value']['from_uin'])
+        msg_dict['value']['send_uin']=bot.uin_to_account(msg_dict['value']['send_uin'])
     elif msg_dict['poll_type']==PRIVATE_MSG:
         msg_dict['private_id']=str(bot.uin_to_account(msg_dict['value']['from_uin']))
     elif msg_dict['poll_type']==DISCU_MSG:

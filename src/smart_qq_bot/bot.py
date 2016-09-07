@@ -341,27 +341,34 @@ class QQBot(object):
         :return:str 用户QQ号
         """
         uin_str = str(tuin)
-        try:
-            logger.debug("[UIN_TO_ACCOUNT] " + str(tuin))
-            info = json.loads(
-                self.client.get(
-                    'http://s.web2.qq.com/api/get_friend_uin2?tuin={0}&type=1&vfwebqq={1}&t={2}'.format(
-                        uin_str,
-                        self.vfwebqq,
-                        self.client.get_timestamp()
-                    ),
-                    SMART_QQ_REFER
+        if sql.fetch_one('select account_id from account_data where account_code={0};'.format(uin_str)):
+            return sql.fetch_one('select account_id from account_data where account_code={0};'.format(uin_str))[0];
+        else:
+            try:
+                logger.debug("[UIN_TO_ACCOUNT] " + str(tuin))
+                info = json.loads(
+                    self.client.get(
+                        'http://s.web2.qq.com/api/get_friend_uin2?tuin={0}&type=1&vfwebqq={1}&t={2}'.format(
+                            uin_str,
+                            self.vfwebqq,
+                            self.client.get_timestamp()
+                        ),
+                        SMART_QQ_REFER
+                    )
                 )
-            )
-            logger.debug("RESPONSE uin_to_account html:    " + str(info))
-            if info['retcode'] != 0:
-                raise TypeError('uin_to_account retcode error')
-            info = info['result']['account']
-            return info
+                logger.debug("RESPONSE uin_to_account html:    " + str(info))
+                if info['retcode'] != 0:
+                    raise TypeError('uin_to_account retcode error')
+                info = info['result']['account']
+                if sql.fetch_one('select * from account_data where account_id={0};'.format(info)):
+                    sql.execute('update account_data set account_code={0} where account_id={1};'.format(uin_str,info))
+                else:
+                    sql.execute("insert into account_data(account_id,account_code) values('{0}','{1}');".format(info,uin_str))
+                return info
 
-        except Exception:
-            logger.exception("RUNTIMELOG uin_to_account fail")
-            return None
+            except Exception:
+                logger.exception("RUNTIMELOG uin_to_account fail")
+                return None
 
     def get_self_info(self):
         """
