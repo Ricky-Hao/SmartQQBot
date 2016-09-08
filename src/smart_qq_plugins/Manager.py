@@ -41,7 +41,7 @@ def Manager(msg,bot):
     #获取群号
     (account,account_type)=utils.get_account_and_type(msg)
     logger.debug('[Manager] account={0}, account_type={1}, send_uin={2}'.format(account,account_type,msg.send_uin))
-    logget.debug('[Manager] '+isManager(msg,account_type))
+    logger.debug('[Manager] '+isManager(msg,account_type))
     if isManager(msg,account_type):
         if not utils.in_plugins(account,account_type,plugin_name) and utils.is_match(r'^!召唤 (.*)$',msg.content):
             #捕获昵称
