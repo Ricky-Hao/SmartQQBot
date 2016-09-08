@@ -141,11 +141,11 @@ def Manager(msg,bot):
                 p=sql.fetch_all('select * from Manager where group_id="00000";')
                 if p:
                     s='全局管理员：\n'
-                    for i in p:
+                    for i in p[0]:
                         s+=i+'\n'
                     if l:
                         s+='群管理员：\n'
-                        for i in l:
+                        for i in l[0]:
                             s+=i+'\n'
                     bot.reply_msg(msg,s)
                 else:
