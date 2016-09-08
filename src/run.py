@@ -25,7 +25,7 @@ if not os.path.exists(db):
     for i in plugins:
         sql.execute("insert into plugins(account,plugin_name,account_type) values ('{0}','{1}','{2}');".format("00000",i,'group'))
     for i in managers:
-        sql.execute("insert into Activate(account_id,group_id) values('{0}','{1}')".format(i,'00000'))
+        sql.execute("insert into Activate(account_id,group_id) values('{0}','{1}');".format(i,'00000'))
 else:
     sql.connect(db)
 

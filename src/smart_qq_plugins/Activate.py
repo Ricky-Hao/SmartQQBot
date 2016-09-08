@@ -124,6 +124,30 @@ def do_Activate(msg,bot):
                 else:
                     bot.reply_msg(msg,'全部插件都启用了啦~')
 
+            #添加管理人员
+            elif account_type=='group_message' and utils.is_match(r'^!管理 add (\d{5,12})$',msg.content):
+                manager_id=utils.is_match(r'^!管理 add (\d{5,12})$',msg.content).group(1)
+                sql.execute('insert into Activate(account_id,group_id) values("{0}","{1}");'.format(manager_id,account))
+                bot.reply_msg(msg,"{0} 成功成为管理人员~".format(manager_id))
+
+            #列出管理人员
+            elif account_type=='group_message' and utils.is_match(r'^!管理 list$',msg.content):
+                l=sql.fetch_all('select * from Activate where group_id={0};'.format(account))
+                if l:
+                    s=''
+                    for i in l:
+                        s+=i+'\n'
+                    bot.reply_msg(msg,s)
+                else:
+                    bot.reply_msg(msg,"没有管理人员哦~")
+
+            #删除管理人员
+            elif account_type=='group_message' and utils.is_match(r'^!管理 remove (\d{5,12})$',msg.content):
+                manager_id=utils.is_match(r'^!管理 remove (\d{5,12})$',msg.content).group(1)
+                sql.execute('delete from Activate where account_id={0} and group_id={1};'.format(manager_id,account))
+                bot.reply_msg(msg,'{0} 已不再是管理员。。。'.format(manager_id))
+
+
             #完全关闭
             elif utils.is_match(r'^!回去吧 (.*)$',msg.content):
                 m_nickname=utils.is_match(r'^!回去吧 (.*)$',msg.content).group(1)
