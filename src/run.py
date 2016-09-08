@@ -14,7 +14,7 @@ db=r"./config/data.db"
 
 if not os.path.exists(db):
     sql.connect(db)
-    sql.execute('create table Activate(id integer primary key autoincrement unique not null,account_id varchar(20),group_id varvhar(20));')
+    sql.execute('create table Manager(id integer primary key autoincrement unique not null,account_id varchar(20),group_id varvhar(20));')
     sql.execute('create table account_data(id integer primary key autoincrement unique not null,account_id varchar(20),account_code varvhar(20));')
     sql.execute('create table group_data(id integer primary key autoincrement unique not null,group_id varchar(20),group_name varchar(100),group_code varvhar(20));')
     sql.execute('create table discu_data(id integer primary key autoincrement unique not null,fake_did varchar(20),discu_name varvhar(100));')
@@ -25,7 +25,7 @@ if not os.path.exists(db):
     for i in plugins:
         sql.execute("insert into plugins(account,plugin_name,account_type) values ('{0}','{1}','{2}');".format("00000",i,'group'))
     for i in managers:
-        sql.execute("insert into Activate(account_id,group_id) values('{0}','{1}');".format(i,'00000'))
+        sql.execute("insert into Manager(account_id,group_id) values('{0}','{1}');".format(i,'00000'))
 else:
     sql.connect(db)
 

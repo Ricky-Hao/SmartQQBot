@@ -125,7 +125,7 @@ def sample_plugin(msg, bot):
 {
   "plugin_packages": [],
   "plugin_on": [
-      "Activate",
+      "Manager",
       "Nickname",
       "sample_plugin"
   ]
@@ -146,7 +146,7 @@ def sample_plugin(msg, bot):
 {
   "plugin_packages": ['your_plugin_package_name'],
   "plugin_on": [
-      "Activate",
+      "Manager",
       "Nickname"
   ]
 }
