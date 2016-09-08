@@ -24,7 +24,6 @@ def update_help_data():
                 sql.execute("insert into Help(plugin_name,help) values('{0}','{1}');".format(p,json.dumps(tmp.HELP))) 
             except Exception as e:
                 logger.debug(e)
-        elif p!=plugin_name
         
 def help_init():
     if not utils.check_table('Help'):
