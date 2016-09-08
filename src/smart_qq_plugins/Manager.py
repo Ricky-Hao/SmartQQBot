@@ -137,16 +137,16 @@ def Manager(msg,bot):
 
             #列出管理人员
             elif account_type=='group' and utils.is_match(r'^!管理 list$',msg.content):
-                l=sql.fetch_all('select * from Manager where group_id={0};'.format(account))
-                p=sql.fetch_all('select * from Manager where group_id="00000";')
+                l=sql.fetch_all('select account_id from Manager where group_id={0};'.format(account))
+                p=sql.fetch_all('select account_id from Manager where group_id="00000";')
                 if p:
                     s='全局管理员：\n'
                     for i in p[0]:
-                        s+=i+'\n'
+                        s+=i[0]+'\n'
                     if l:
                         s+='群管理员：\n'
                         for i in l[0]:
-                            s+=i+'\n'
+                            s+=i[0]+'\n'
                     bot.reply_msg(msg,s)
                 else:
                     bot.reply_msg(msg,"没有管理人员哦~")
