@@ -142,11 +142,11 @@ def Manager(msg,bot):
                 if p:
                     s='全局管理员：\n'
                     for i in p[0]:
-                        s+=i[0]+'\n'
+                        s+=i+'\n'
                     if l:
                         s+='群管理员：\n'
                         for i in l[0]:
-                            s+=i[0]+'\n'
+                            s+=i+'\n'
                     bot.reply_msg(msg,s)
                 else:
                     bot.reply_msg(msg,"没有管理人员哦~")
