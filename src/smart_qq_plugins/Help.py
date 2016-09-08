@@ -17,18 +17,20 @@ with open('./config/plugin.json','r') as f:
 
 def update_help_data():
     for p in plugin_list:
-        if p!=plugin_name and not sql.fetch_one('select help from Help where plugin_name="{0}";'.format(p)):
+        if p!=plugin_name:
             try:
                 tmp=(__import__('smart_qq_plugins.'+p,fromlist=['HELP']))
                 logger.debug(tmp.HELP)
                 sql.execute("insert into Help(plugin_name,help) values('{0}','{1}');".format(p,json.dumps(tmp.HELP))) 
             except Exception as e:
                 logger.debug(e)
-        
+        elif p!=plugin_name
         
 def help_init():
     if not utils.check_table('Help'):
         sql.execute('create table Help(id integer primary key autoincrement unique not null,plugin_name varchar(100),help varchar(1000));')
+    else:
+        sql.execute('delete from Help;')
 
 help_init()
 update_help_data()
