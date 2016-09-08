@@ -10,15 +10,13 @@ import base64
 import time
 
 ######
-# 使用前请先前往 http://apistore.baidu.com/apiworks/servicedetail/736.html
+# 使用前请先前往 http://www.tuling123.com/
 # 申请 API 谢谢
 # 另外需要 requests 支持
-url = "http://apis.baidu.com/turing/turing/turing"
+url = "http://www.tuling123.com/openapi/api"
 with open('./config/API_Key.json','r') as f:
     API_KEY=json.load(f)
-headers = {
-    'apikey': API_KEY.get('Baidu')
-}
+headers = {}
 plugin_name='Tuling_bot'
 HELP={
     1:'Tuling_bot: 图灵机器人插件',
