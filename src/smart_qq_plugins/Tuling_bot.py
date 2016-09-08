@@ -7,6 +7,7 @@ from smart_qq_bot.signals import on_all_message
 import smart_qq_bot.sqlite as sql
 import smart_qq_bot.utils as utils
 import base64
+import time
 
 ######
 # 使用前请先前往 http://apistore.baidu.com/apiworks/servicedetail/736.html

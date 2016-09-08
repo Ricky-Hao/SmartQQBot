@@ -141,12 +141,12 @@ def Manager(msg,bot):
                 p=sql.fetch_all('select account_id from Manager where group_id="00000";')
                 if p:
                     s='全局管理员：\n'
-                    for i in p[0]:
-                        s+=i+'\n'
+                    for i in p:
+                        s+=i[0]+'\n'
                     if l:
                         s+='群管理员：\n'
-                        for i in l[0]:
-                            s+=i+'\n'
+                        for i in l:
+                            s+=i[0]+'\n'
                     bot.reply_msg(msg,s)
                 else:
                     bot.reply_msg(msg,"没有管理人员哦~")
