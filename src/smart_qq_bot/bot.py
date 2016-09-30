@@ -204,6 +204,8 @@ class QQBot(object):
                 'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid),
                 self.qrcode_path
             )
+            if(os.path.getsize(self.qrcode_path)!=0):
+                logger.info("QRCode Downloaded!")
 
             while True:
                 ret_code, redirect_url = self._get_qr_login_status(
