@@ -160,6 +160,9 @@ def Manager(msg,bot):
                 sql.execute('delete from Manager where account_id={0} and group_id={1};'.format(manager_id,account))
                 bot.reply_msg(msg,'{0} 已不再是管理员。。。'.format(manager_id))
 
+            elif utils.is_match(r'^!名字$',msg.content):
+                nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
+                bot.reply_msg(msg,'我叫'+nickname+'!')
 
             #完全关闭
             elif utils.is_match(r'^!回去吧 (.*)$',msg.content):
