@@ -81,6 +81,7 @@ class PrivateMsg(QMessage):
         super(PrivateMsg, self).__init__(msg_dict)
         self.to_uin = msg_dict['value']['to_uin']
         self.from_uin = msg_dict['value']['from_uin']
+        self.send_uin = msg_dict['value']['from_uin']
         self.private_id=msg_dict['private_id']
 
 
