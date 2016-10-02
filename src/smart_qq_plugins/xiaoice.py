@@ -11,7 +11,8 @@ from itchat.content import *
 
 plugins_name="Xiaoice"
 HELP={
-    1:'XiaoIce: 微软小冰插件'
+    1:'Xiaoice: 微软小冰插件',
+    2:'昵称+标点+想说的话'
 }
 
 last_msg=""
