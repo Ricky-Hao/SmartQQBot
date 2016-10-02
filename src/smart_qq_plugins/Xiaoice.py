@@ -36,7 +36,7 @@ class wechat(threading.Thread):
             last_bot.reply_msg(last_msg,msg['Content'])
 
     @itchat.msg_register(PICTURE,RECORDING,isMpChat=True)
-    def repeat_if_no_text(msg)
+    def repeat_if_no_text(msg):
         global last_content
 
         logger.info("[xiaoice] resend "+content)
