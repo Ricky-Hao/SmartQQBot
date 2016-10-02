@@ -5,6 +5,7 @@ import datetime
 import os
 import time
 import re
+import pyqrcode
 import json
 from random import randint
 from threading import Thread
@@ -204,6 +205,10 @@ class QQBot(object):
                 'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid),
                 self.qrcode_path
             )
+            qrcontent=self.get("https://api.qrserver.com/v1/read-qr-code/?fileurl="+'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid))
+            qrcontent=json.loads(qrcontent)[0]['symbol'][0]['data']
+            logger.info(pyqrcode.create(qrcontent).terminal())
+
             if(os.path.getsize(self.qrcode_path)!=0):
                 logger.info("QRCode Downloaded!")
 
