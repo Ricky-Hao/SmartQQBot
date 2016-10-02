@@ -17,6 +17,7 @@ HELP={
 
 last_msg=""
 num=""
+last_content=""
 last_bot=""
 
 
@@ -34,6 +35,14 @@ class wechat(threading.Thread):
         if(msg['FromUserName']==num):
             last_bot.reply_msg(last_msg,msg['Content'])
 
+    @itchat.msg_register(PICTURE,RECORDING,isMpChat=True)
+    def repeat_if_no_text()
+        global last_content
+
+        logger.info("[xiaoice] resend "+content)
+        num=itchat.search_mps(name="小冰")[0]['UserName']
+        itchat.send_msg(msg=last_content, toUserName=num)
+
     def run(self):
         itchat.run()
 
@@ -42,6 +51,7 @@ class wechat(threading.Thread):
         global last_msg
         global num
         global last_bot
+        global last_content
         (account,account_type)=utils.get_account_and_type(msg)
         if utils.in_plugins(account,account_type,plugins_name):
             nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
@@ -52,6 +62,7 @@ class wechat(threading.Thread):
                 itchat.send_msg(msg=content, toUserName=num)
                 last_msg=msg
                 last_bot=bot
+                last_content=content
 
 t=wechat()
 t.start()
