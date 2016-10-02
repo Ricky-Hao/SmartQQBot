@@ -205,7 +205,7 @@ class QQBot(object):
                 'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid),
                 self.qrcode_path
             )
-            qrcontent=self.get("https://api.qrserver.com/v1/read-qr-code/?fileurl="+'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid))
+            qrcontent=self.client.get("https://api.qrserver.com/v1/read-qr-code/?fileurl="+'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid))
             qrcontent=json.loads(qrcontent)[0]['symbol'][0]['data']
             logger.info(pyqrcode.create(qrcontent).terminal())
 
