@@ -54,11 +54,11 @@ class HttpClient(object):
             logger.debug(e)
             return e
 
-    def post(self, url, data, refer=None):
+    def post(self, url, data, refer=None,files=None):
         try:
             req = requests.post(url, data=data,headers={'Referer':refer or SMART_QQ_REFER})
             try:
-                tmp_req = self._opener.post(url, data=data,headers={'Referer':refer or SMART_QQ_REFER}, timeout=180)
+                tmp_req = self._opener.post(url, data=data,headers={'Referer':refer or SMART_QQ_REFER}, timeout=180,files=files)
             except requests.HTTPError:
                 raise ServerResponseEmpty("Server response error, check the network connections: %s" % url)
             self._cookie.save(COOKIE_FILE, ignore_discard=True, ignore_expires=True)
