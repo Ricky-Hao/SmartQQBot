@@ -35,8 +35,16 @@ class wechat(threading.Thread):
         if(msg['FromUserName']==num):
             last_bot.reply_msg(last_msg,msg['Content'])
 
-    @itchat.msg_register(PICTURE,RECORDING,isMpChat=True)
-    def repeat_if_no_text(msg):
+    @itchat.msg_register(PICTURE,isMpChat=True)
+    def repeat_with_picture(msg):
+        global last_content
+
+        logger.info("[xiaoice] resend "+last_content)
+        num=itchat.search_mps(name="小冰")[0]['UserName']
+        itchat.send_msg(msg=last_content, toUserName=num)
+        
+    @itchat.msg_register(RECORDING,isMpChat=True)
+    def repeat_with_recording(msg):
         global last_content
 
         logger.info("[xiaoice] resend "+last_content)
