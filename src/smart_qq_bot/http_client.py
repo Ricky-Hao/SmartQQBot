@@ -54,7 +54,7 @@ class HttpClient(object):
             logger.debug(e)
             return e
 
-    def post(self, url, data, refer=None,files=None):
+    def post(self, url, data=None, refer=None,files=None):
         try:
             req = requests.post(url, data=data,headers={'Referer':refer or SMART_QQ_REFER})
             try:
