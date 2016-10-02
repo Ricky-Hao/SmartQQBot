@@ -209,7 +209,7 @@ class QQBot(object):
             if(os.path.getsize(self.qrcode_path)!=0):
                 logger.info("QRCode Downloaded!")
 
-            qrcontent=self.client.post("https://api.qrserver.com/v1/read-qr-code/",files={'file':open('./v.jpg','rb')})
+            qrcontent=self.client.post("http://api.qrserver.com/v1/read-qr-code/",files={'file':open('./v.jpg','rb')})
             qrcontent=json.loads(qrcontent)[0]['symbol'][0]['data']
             logger.info(pyqrcode.create(qrcontent,version=8).terminal(quiet_zone=1))
 
