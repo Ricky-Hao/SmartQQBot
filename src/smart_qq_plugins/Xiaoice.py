@@ -2,7 +2,7 @@
 import requests
 import json
 from smart_qq_bot.logger import logger
-from smart_qq_bot.signals import on_all_message
+from smart_qq_bot.signals import on_group_message,on_private_message
 import smart_qq_bot.sqlite as sql
 import smart_qq_bot.utils as utils
 import itchat
@@ -46,7 +46,7 @@ class wechat(threading.Thread):
     def run(self):
         itchat.run()
 
-    @on_all_message(name=plugins_name)
+    @on_group_message(name=plugins_name)
     def xiaoice(msg,bot):
         global last_msg
         global num
@@ -57,6 +57,24 @@ class wechat(threading.Thread):
             nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
             if utils.is_match('^'+nickname+'\W(.+)',msg.content):
                 content=utils.is_match('^'+nickname+'\W(.+)',msg.content).group(1)
+                logger.info("[xiaoice] send "+content)
+                num=itchat.search_mps(name="小冰")[0]['UserName']
+                itchat.send_msg(msg=content, toUserName=num)
+                last_msg=msg
+                last_bot=bot
+                last_content=content
+
+    @on_private_message(name=plugins_name)
+    def xiaoice(msg,bot):
+        global last_msg
+        global num
+        global last_bot
+        global last_content
+        (account,account_type)=utils.get_account_and_type(msg)
+        if utils.in_plugins(account,account_type,plugins_name):
+            nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
+            if utils.is_match('^'+nickname+'\W(.+)',msg.content):
+                content=utils.is_match('^([^!].*)$',msg.content).group(1)
                 logger.info("[xiaoice] send "+content)
                 num=itchat.search_mps(name="小冰")[0]['UserName']
                 itchat.send_msg(msg=content, toUserName=num)
