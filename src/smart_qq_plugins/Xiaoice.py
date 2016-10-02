@@ -47,7 +47,7 @@ class wechat(threading.Thread):
         itchat.run()
 
     @on_group_message(name=plugins_name)
-    def xiaoice(msg,bot):
+    def xiaoice_group(msg,bot):
         global last_msg
         global num
         global last_bot
@@ -65,7 +65,7 @@ class wechat(threading.Thread):
                 last_content=content
 
     @on_private_message(name=plugins_name)
-    def xiaoice(msg,bot):
+    def xiaoice_private(msg,bot):
         global last_msg
         global num
         global last_bot
@@ -73,7 +73,7 @@ class wechat(threading.Thread):
         (account,account_type)=utils.get_account_and_type(msg)
         if utils.in_plugins(account,account_type,plugins_name):
             nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
-            if utils.is_match('^'+nickname+'\W(.+)',msg.content):
+            if utils.is_match('^([^!].*)$',msg.content):
                 content=utils.is_match('^([^!].*)$',msg.content).group(1)
                 logger.info("[xiaoice] send "+content)
                 num=itchat.search_mps(name="小冰")[0]['UserName']
