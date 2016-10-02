@@ -16,3 +16,4 @@ cookie.data
 *.json
 *.conf
 *.db
+*.pkl
