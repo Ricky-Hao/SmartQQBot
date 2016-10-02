@@ -39,7 +39,7 @@ class wechat(threading.Thread):
     def repeat_if_no_text(msg):
         global last_content
 
-        logger.info("[xiaoice] resend "+content)
+        logger.info("[xiaoice] resend "+last_content)
         num=itchat.search_mps(name="小冰")[0]['UserName']
         itchat.send_msg(msg=last_content, toUserName=num)
 
