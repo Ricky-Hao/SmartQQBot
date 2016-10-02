@@ -207,7 +207,7 @@ class QQBot(object):
             )
             qrcontent=self.client.get("https://api.qrserver.com/v1/read-qr-code/?fileurl="+'https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid))
             qrcontent=json.loads(qrcontent)[0]['symbol'][0]['data']
-            logger.info(pyqrcode.create(qrcontent,version=4).terminal())
+            logger.info(pyqrcode.create(qrcontent,version=8).terminal(quiet_zone=1))
 
             if(os.path.getsize(self.qrcode_path)!=0):
                 logger.info("QRCode Downloaded!")
