@@ -63,7 +63,7 @@ class wechat(threading.Thread):
         (account,account_type)=utils.get_account_and_type(msg)
         if utils.in_plugins(account,account_type,plugins_name):
             nickname=sql.fetch_one('select nickname from Nickname where account="{0}" and account_type="{1}";'.format(account,account_type))[0]
-            if account_type=='group' and utils.is_match('^'+nickname+'\W(.+)',msg.content):
+            if (account_type=='group' or account_type=="discu") and utils.is_match('^'+nickname+'\W(.+)',msg.content):
                 content=utils.is_match('^'+nickname+'\W(.+)',msg.content).group(1)
                 logger.info("[xiaoice] send "+content)
                 num=itchat.search_mps(name="小冰")[0]['UserName']
