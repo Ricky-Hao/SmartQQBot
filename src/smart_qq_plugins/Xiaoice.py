@@ -80,5 +80,5 @@ class wechat(threading.Thread):
                 last_bot=bot
                 last_content=content
 
-t=wechat()
+t=threading.Thread(target=wechat,daemon=True)
 t.start()
